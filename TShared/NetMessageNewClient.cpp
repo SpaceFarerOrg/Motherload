@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "NetMessageNewClient.h"
 
+CNetMessageNewClient::CNetMessageNewClient()
+{
+	myData.myID = EMessageType::NewClient;
+}
+
 size_t CNetMessageNewClient::GetConnectedClient() const
 {
 	return myData.myConnectedClient;
