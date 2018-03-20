@@ -185,15 +185,15 @@ bool CClientMain::RunClient()
 	if (myIsConnectedToServer)
 	{
 		UpdateChatMode();
+		myPlayerUpdateTimer += dt;
+
+		if (myPlayerUpdateTimer >= 1.f / 60.f)
+		{
+			myPlayerUpdateTimer = 0.f;
+			SendPlayerData();
+		}
 	}
 
-	myPlayerUpdateTimer += dt;
-
-	if (myPlayerUpdateTimer >= 1.f / 60.f)
-	{
-		myPlayerUpdateTimer = 0.f;
-		SendPlayerData();
-	}
 
 	std::this_thread::yield();
 
