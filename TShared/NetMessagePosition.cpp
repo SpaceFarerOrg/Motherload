@@ -9,28 +9,28 @@ CNetMessagePosition::CNetMessagePosition()
 
 void CNetMessagePosition::GetPosition(float & aOutX, float & aOutY)
 {
-	aOutX = myData.myX;
-	aOutY = myData.myY;
+	aOutX = myX;
+	aOutY = myY;
 }
 
 void CNetMessagePosition::DoSerialize()
 {
 	CNetMessage::DoSerialize();
-	SERIALIZE(myBuffer, myData.myX);
-	SERIALIZE(myBuffer, myData.myY);
+	SERIALIZE(myBuffer, myX);
+	SERIALIZE(myBuffer, myY);
 }
 
 void CNetMessagePosition::DoDeserialize()
 {
 	CNetMessage::DoDeserialize();
-	DESERIALIZE(myBuffer, myData.myX);
-	DESERIALIZE(myBuffer, myData.myY);
+	DESERIALIZE(myBuffer, myX);
+	DESERIALIZE(myBuffer, myY);
 }
 
 void CNetMessagePosition::Create(SPositionMessageData aData)
 {
 	CNetMessage::Create(myData);
 	myData.myID = EMessageType::Position;
-	myData.myX = aData.myX;
-	myData.myY = aData.myY;
+	myX = aData.myX;
+	myY = aData.myY;
 }

@@ -24,6 +24,7 @@ private:
 
 	void Create(SPositionMessageData aData);
 
-	SPositionMessageData myData;
+	float myX;
+	float myY;
 
 };
