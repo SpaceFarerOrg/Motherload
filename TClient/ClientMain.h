@@ -18,6 +18,7 @@ public:
 	void BindGame(CGame& aGameRef);
 
 	void UpdateChatMode();
+	void DisconnectFromServer();
 
 private:
 	unsigned short myID;
@@ -33,4 +34,5 @@ private:
 	
 	CGame* myGame;
 
+	time_t myLatestRecievedMessageTime;
 };

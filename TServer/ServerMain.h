@@ -29,5 +29,6 @@ private:
 	std::vector<sockaddr_in> myAddressToClientLUT;
 
 	CNetMessageManager myMessageManager;
+	time_t myLatestPingTime;
 };
 

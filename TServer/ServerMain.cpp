@@ -7,6 +7,7 @@
 #include "Utilities.h"
 #include "NetMessageChatMessage.h"
 #include "NetDisconnectMessage.h"
+#include "NetMessagePing.h"
 
 CServerMain::CServerMain()
 {
@@ -40,11 +41,18 @@ bool CServerMain::StartServer()
 	myLocalAddress.sin_addr.s_addr = INADDR_ANY;
 
 	mySocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+	//Set as non blocking because fuckall
+	unsigned long mode = 1;
+	ioctlsocket(mySocket, FIONBIO, &mode);
+
 	int fel = bind(mySocket, (sockaddr*)&myLocalAddress, sizeof(myLocalAddress));
 
 	PRINT("Listening for new connections...");
 
 	myMessageManager.Init(256, mySocket);
+
+	myLatestPingTime = time(0);
 
 	return true;
 }
@@ -104,6 +112,14 @@ bool CServerMain::RunServer()
 		break;
 		}
 	}
+
+	time_t currentTime = time(nullptr);
+	if (currentTime - myLatestPingTime >= 1)
+	{
+		myLatestPingTime = currentTime;
+		myMessageManager.CreateMessage<CNetMessagePing>(CNetMessage::SNetMessageData());
+	}
+
 	int errorCode = WSAGetLastError();
 
 	myMessageManager.Flush(myAddressToClientLUT);

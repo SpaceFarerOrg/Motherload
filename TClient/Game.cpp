@@ -36,6 +36,8 @@ void CGame::SetIsConnected(bool aIsConnected)
 {
 	if (aIsConnected)
 		myConnectedStatus.setString("Connected");
+	else
+		myConnectedStatus.setString("Not Connected");
 }
 
 bool CGame::GetShouldRun() const

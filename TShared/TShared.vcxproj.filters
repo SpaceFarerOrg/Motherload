@@ -4,6 +4,9 @@
     <Filter Include="PrecompiledHeader">
       <UniqueIdentifier>{83c467ed-fb37-4d04-baab-e837ffd1c636}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MessageTypes">
+      <UniqueIdentifier>{cc23751e-ccb5-48fa-95dd-d50be8823eb0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -16,21 +19,39 @@
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="SerializeHelper.h" />
-    <ClInclude Include="NetMessage.h" />
-    <ClInclude Include="NetMessageChatMessage.h" />
     <ClInclude Include="NetMessageManager.h" />
-    <ClInclude Include="NetMessageConnect.h" />
-    <ClInclude Include="NetDisconnectMessage.h" />
+    <ClInclude Include="NetDisconnectMessage.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessage.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessageChatMessage.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessageConnect.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessagePing.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>PrecompiledHeader</Filter>
     </ClCompile>
     <ClCompile Include="Utilities.cpp" />
-    <ClCompile Include="NetMessage.cpp" />
-    <ClCompile Include="NetMessageChatMessage.cpp" />
     <ClCompile Include="NetMessageManager.cpp" />
-    <ClCompile Include="NetMessageConnect.cpp" />
-    <ClCompile Include="NetDisconnectMessage.cpp" />
+    <ClCompile Include="NetDisconnectMessage.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessage.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessageChatMessage.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessageConnect.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessagePing.cpp" />
   </ItemGroup>
 </Project>

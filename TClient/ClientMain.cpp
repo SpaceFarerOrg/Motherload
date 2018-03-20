@@ -91,11 +91,26 @@ bool CClientMain::StartClient()
 
 bool CClientMain::RunClient()
 {
+	time_t currentTime = time(nullptr);
+
+	if (myIsConnectedToServer)
+	{
+		if (currentTime - myLatestRecievedMessageTime >= 5)
+		{
+			myGame->SetIsConnected(false);
+			DisconnectFromServer();
+		}
+	}
+
 	char buff[MAX_BUFFER_SIZE];
 	ZeroMemory(buff, MAX_BUFFER_SIZE);
 
+	sockaddr_in from;
+
 	if (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, nullptr, 0) != SOCKET_ERROR)
 	{
+		myLatestRecievedMessageTime = currentTime;
+
 		size_t buffIndex = 0;
 		EMessageType id = static_cast<EMessageType>(buff[buffIndex]);
 
@@ -122,6 +137,11 @@ bool CClientMain::RunClient()
 			PRINT(rec.GetMessage());
 		}
 		break;
+		case EMessageType::Ping:
+		{
+			PRINT("Recieved ping");
+		}
+		break;
 		}
 	}
 
@@ -139,13 +159,7 @@ bool CClientMain::RunClient()
 
 void CClientMain::ShutDownClient()
 {
-	CNetMessage::SNetMessageData disconMes;
-	disconMes.myTargetID = TO_ALL;
-	disconMes.mySenderID = myID;
-
-	myMessageManager.CreateMessage<CNetDisconnectMessage>(disconMes);
-
-	myMessageManager.Flush({ myServerAddress });
+	DisconnectFromServer();
 
 	myShouldRun.store(false);
 
@@ -171,5 +185,16 @@ void CClientMain::UpdateChatMode()
 
 		myInput.clear();
 	}
+}
+
+void CClientMain::DisconnectFromServer()
+{
+	CNetMessage::SNetMessageData disconMes;
+	disconMes.myTargetID = TO_ALL;
+	disconMes.mySenderID = myID;
+
+	myMessageManager.CreateMessage<CNetDisconnectMessage>(disconMes);
+
+	myMessageManager.Flush({ myServerAddress });
 }
 

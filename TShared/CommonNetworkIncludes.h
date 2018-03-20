@@ -25,6 +25,7 @@ enum class EMessageType : short
 	Chat,
 	Connect,
 	Disconnect,
+	Ping,
 	Size
 };
 
