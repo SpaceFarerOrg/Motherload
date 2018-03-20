@@ -16,6 +16,11 @@ void CGame::Init()
 	myConnectedStatus.setCharacterSize(30);
 	myConnectedStatus.setPosition(5, 5);
 
+	myKbPerSecond.setFont(myDebugFont);
+	myKbPerSecond.setCharacterSize(30);
+	myKbPerSecond.setPosition(5,40.f);
+
+
 	myConnectedStatus.setString("Not Connected");
 
 	myPlayer.Init();
@@ -48,6 +53,8 @@ void CGame::Render()
 	myPlayer.Render(&myWindow);
 
 	myWindow.draw(myConnectedStatus);
+
+	myWindow.draw(myKbPerSecond);
 
 	myWindow.display();
 }
@@ -82,6 +89,11 @@ void CGame::SetIsConnected(bool aIsConnected)
 		myConnectedStatus.setString("Not Connected");
 		myConnectedStatus.setFillColor(sf::Color::Red);
 	}
+}
+
+void CGame::SetKbPerSecond(float aKbPerSecond)
+{
+	myKbPerSecond.setString("kb/s:" + std::to_string(aKbPerSecond));
 }
 
 bool CGame::GetShouldRun() const

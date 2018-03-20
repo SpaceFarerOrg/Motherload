@@ -207,6 +207,10 @@ bool CClientMain::RunClient()
 
 	myMessageManager.Flush({ myServerAddress });
 
+	myMessageManager.Update(dt);
+	myGame->SetKbPerSecond((float)myMessageManager.GetSentDataLastSecond() / 125.f);
+
+
 	return myShouldRun;
 }
 

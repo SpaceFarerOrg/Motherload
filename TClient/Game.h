@@ -19,6 +19,7 @@ public:
 	void RemovePlayer(size_t aID);
 
 	void SetIsConnected(bool aIsConnected);
+	void SetKbPerSecond(float aKbPerSecond);
 	bool GetShouldRun() const;
 
 	sf::Vector2f GetPlayerPosition();
@@ -32,6 +33,7 @@ private:
 
 	sf::Font myDebugFont;
 	sf::Text myConnectedStatus;
+	sf::Text myKbPerSecond;
 
 	sf::Clock myClock;
 
