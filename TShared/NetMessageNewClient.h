@@ -3,6 +3,8 @@
 
 class CNetMessageNewClient : public CNetMessage
 {
+	friend class CNetMessageManager;
+
 public:
 	struct SNetMessageNewClientData : public SNetMessageData
 	{
