@@ -170,6 +170,12 @@ bool CServerMain::RunServer()
 
 void CServerMain::ShutDownServer()
 {
+	CNetMessage::SNetMessageData disconMes;
+	disconMes.myTargetID = TO_ALL;
+
+	myMessageManager.CreateMessage<CNetDisconnectMessage>(disconMes);
+	myMessageManager.Flush(myAddressToClientLUT);
+
 	closesocket(mySocket);
 	WSACleanup();
 }
