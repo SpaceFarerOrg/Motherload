@@ -23,6 +23,6 @@ private:
 
 	void Create(SNetMessageNewClientData aData);
 
-	SNetMessageNewClientData myData;
+	size_t myConnectedClient;
 
 };

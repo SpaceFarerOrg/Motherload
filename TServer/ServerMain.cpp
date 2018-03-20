@@ -200,7 +200,7 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 
 		for (size_t i = 0; i < myClients.size(); ++i)
 		{
-			if (i == data.myTargetID)
+			if (i+1 == data.myTargetID)
 				continue;
 
 			CNetMessageNewClient::SNetMessageNewClientData newClientData;

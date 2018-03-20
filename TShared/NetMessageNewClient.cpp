@@ -8,24 +8,24 @@ CNetMessageNewClient::CNetMessageNewClient()
 
 size_t CNetMessageNewClient::GetConnectedClient() const
 {
-	return myData.myConnectedClient;
+	return myConnectedClient;
 }
 
 void CNetMessageNewClient::DoSerialize()
 {
 	CNetMessage::DoSerialize();
-	SERIALIZE(myBuffer, myData.myConnectedClient);
+	SERIALIZE(myBuffer, myConnectedClient);
 }
 
 void CNetMessageNewClient::DoDeserialize()
 {
 	CNetMessage::DoDeserialize();
-	DESERIALIZE(myBuffer, myData.myConnectedClient);
+	DESERIALIZE(myBuffer, myConnectedClient);
 }
 
 void CNetMessageNewClient::Create(SNetMessageNewClientData aData)
 {
 	CNetMessage::Create(aData);
 	myData.myID = EMessageType::NewClient;
-	myData.myConnectedClient = aData.myConnectedClient;
+	myConnectedClient = aData.myConnectedClient;
 }
