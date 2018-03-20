@@ -147,7 +147,7 @@ bool CClientMain::RunClient()
 			}
 			else
 			{
-				PRINT(std::to_string(rec.GetData().mySenderID) + " disconnected! :(");
+				PRINT("A player disconnected! :(");
 				myGame->RemovePlayer(rec.GetData().mySenderID);
 			}
 		}
