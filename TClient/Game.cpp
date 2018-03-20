@@ -62,7 +62,7 @@ void CGame::AddPlayer(size_t aID)
 	sf::Sprite newSprite;
 	newSprite.setTexture(myPlayerTexture);
 
-	myOtherPlayers.insert(std::make_pair(aID, myPlayerTexture));
+	myOtherPlayers.insert(std::make_pair(aID, newSprite));
 }
 
 void CGame::SetIsConnected(bool aIsConnected)

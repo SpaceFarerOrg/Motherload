@@ -147,8 +147,8 @@ bool CServerMain::RunServer()
 			rec.GetPosition(x, y);
 			
 			//Update the position of the client in world!
-			myClients[rec.GetData().mySenderID].myX = x;
-			myClients[rec.GetData().mySenderID].myY = y;
+			myClients[rec.GetData().mySenderID-1].myX = x;
+			myClients[rec.GetData().mySenderID-1].myY = y;
 		}
 		break;
 		}
