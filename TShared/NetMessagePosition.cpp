@@ -24,5 +24,7 @@ void CNetMessagePosition::DoDeserialize()
 
 void CNetMessagePosition::Create(SPositionMessageData aData)
 {
+	CNetMessage::Create(myData);
+	myData.myID = EMessageType::Position;
 	myData = aData;
 }
