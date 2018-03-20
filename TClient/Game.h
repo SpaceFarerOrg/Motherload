@@ -16,6 +16,7 @@ public:
 
 	void UpdateOtherPlayer(int aID, const sf::Vector2f& aPos);
 	void AddPlayer(size_t aID);
+	void RemovePlayer(size_t aID);
 
 	void SetIsConnected(bool aIsConnected);
 	bool GetShouldRun() const;
