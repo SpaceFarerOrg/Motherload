@@ -7,6 +7,8 @@ void CNetMessageManager::Init(size_t aBufferSize, SOCKET aSocketToUse)
 {
 	myMessages.reserve(aBufferSize);
 	mySocket = aSocketToUse;
+
+	myTimer = 0.f;
 }
 
 void CNetMessageManager::Flush(const std::vector<sockaddr_in>& aAddressList)
@@ -34,9 +36,27 @@ void CNetMessageManager::Flush(const std::vector<sockaddr_in>& aAddressList)
 			if ((toSpecific && j == target) || toAll)
 			{
 				int sendResult = sendto(mySocket, myMessages[i]->GetBufferStart(), myMessages[i]->GetBufferSize(), 0, (sockaddr*)(&aAddressList[j-1]), sizeof(aAddressList[j-1]));
+				mySentThisSecond += sendResult;
 			}
 		}
 		delete myMessages[i];
 	}
 	myMessages.clear();
+}
+
+void CNetMessageManager::Update(float aDT)
+{
+	myTimer += aDT;
+
+	if (myTimer >= 1.f)
+	{
+		mySentLastSecond = mySentThisSecond;
+		mySentThisSecond = 0;
+		myTimer = 0.f;
+	}
+}
+
+int CNetMessageManager::GetSentDataLastSecond()
+{
+	return mySentLastSecond;
 }

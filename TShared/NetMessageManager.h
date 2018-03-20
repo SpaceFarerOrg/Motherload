@@ -22,9 +22,16 @@ public:
 
 	void Flush(const std::vector<sockaddr_in>& aAddressList);
 
+	void Update(float aDT);
+	int GetSentDataLastSecond();
+
 private:
 	std::vector<CNetMessage*> myMessages;
 	SOCKET mySocket;
+
+	float myTimer;
+	int mySentLastSecond;
+	int mySentThisSecond;
 };
 
 template<typename T, typename SData>

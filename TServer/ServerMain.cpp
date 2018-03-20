@@ -153,11 +153,13 @@ bool CServerMain::RunServer()
 	{
 		myLatestPingTime = currentTime;
 		myMessageManager.CreateMessage<CNetMessagePing>(CNetMessage::SNetMessageData());
+		PRINT(std::to_string((float)myMessageManager.GetSentDataLastSecond() / 125) + "kb/s");
 	}
 
 	int errorCode = WSAGetLastError();
 
 	myMessageManager.Flush(myAddressToClientLUT);
+	myMessageManager.Update(myCurrentTimeDelta);
 
 	return shouldContinueToRun;
 }
