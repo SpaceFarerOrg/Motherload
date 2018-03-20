@@ -26,5 +26,6 @@ void CNetMessagePosition::Create(SPositionMessageData aData)
 {
 	CNetMessage::Create(myData);
 	myData.myID = EMessageType::Position;
-	myData = aData;
+	myData.myX = aData.myX;
+	myData.myY = aData.myY;
 }
