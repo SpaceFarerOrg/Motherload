@@ -8,9 +8,13 @@
 #include "NetMessageChatMessage.h"
 #include "NetDisconnectMessage.h"
 #include "NetMessagePing.h"
+#include "NetMessagePosition.h"
 
 CServerMain::CServerMain()
 {
+	myCurrentTimeDelta = 0;
+	myTimeSincePositionSend = 0;
+	myCurrentTimePoint = std::chrono::high_resolution_clock::now();
 }
 
 
@@ -59,6 +63,28 @@ bool CServerMain::StartServer()
 
 bool CServerMain::RunServer()
 {
+	UpdateTime();
+
+	myTimeSincePositionSend += myCurrentTimeDelta;
+
+	if (myTimeSincePositionSend >= POSITION_FREQ)
+	{
+		for (SClient& c : myClients)
+		{
+			CNetMessagePosition::SPositionMessageData data;
+
+			data.myTargetID = TO_ALL - c.myID;
+			data.mySenderID = c.myID;
+			//Test comments
+			data.myX = c.myX;
+			data.myY = c.myY;
+
+			myMessageManager.CreateMessage<CNetMessagePosition>(data);
+		}
+
+		myTimeSincePositionSend -= POSITION_FREQ;
+	}
+	
 	bool shouldContinueToRun = true;
 
 	sockaddr_in from;
@@ -108,6 +134,20 @@ bool CServerMain::RunServer()
 			chatMsgData.myTargetID = TO_ALL - rec.GetData().mySenderID;
 			
 			myMessageManager.CreateMessage<CNetMessageChatMessage>(chatMsgData);
+		}
+		break;
+		case EMessageType::Position:
+		{
+			CNetMessagePosition rec;
+			rec.RecieveData(buff, sizeof(CNetMessagePosition::SPositionMessageData));
+			rec.UnpackMessage();
+
+			float x,y;
+			rec.GetPosition(x, y);
+			
+			//Update the position of the client in world!
+			myClients[rec.GetData().mySenderID].myX = x;
+			myClients[rec.GetData().mySenderID].myY = y;
 		}
 		break;
 		}
@@ -179,4 +219,15 @@ void CServerMain::DisconnectClient(short aClientID)
 bool CServerMain::VerifyClient(const SClient & aClient)
 {
 	return true;
+}
+
+void CServerMain::UpdateTime()
+{
+	timePoint now = std::chrono::high_resolution_clock::now();
+
+	std::chrono::duration<float> dtNow = now - myCurrentTimePoint;
+
+	myCurrentTimeDelta = dtNow.count();
+
+	myCurrentTimePoint = now;
 }

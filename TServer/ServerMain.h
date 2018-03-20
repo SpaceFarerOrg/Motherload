@@ -5,6 +5,11 @@
 #include <vector>
 #include "NetMessageManager.h"
 #include "NetMessageConnect.h"
+#include <chrono>
+
+#define POSITION_FREQ 1.f/60.f
+
+typedef std::chrono::high_resolution_clock::time_point timePoint;
 
 class CServerMain
 {
@@ -21,6 +26,12 @@ private:
 	void DisconnectClient(short aClientID);
 	//void RecieveChatMessage(SProtocol aProtocol);
 	bool VerifyClient(const SClient& aClient);
+
+	void UpdateTime();
+	float myCurrentTimeDelta;
+	timePoint myCurrentTimePoint;
+
+	float myTimeSincePositionSend;
 
 	SOCKET mySocket;
 	sockaddr_in myLocalAddress;
