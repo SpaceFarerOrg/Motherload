@@ -59,5 +59,9 @@ struct SClient
 {
 	std::string myName;
 	size_t myID;
+
+	float myX;
+	float myY;
+
 	bool myIsConnected = true;
 };
