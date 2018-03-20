@@ -89,6 +89,7 @@
     <ClInclude Include="NetMessageChatMessage.h" />
     <ClInclude Include="NetMessageConnect.h" />
     <ClInclude Include="NetMessageManager.h" />
+    <ClInclude Include="NetMessageNewClient.h" />
     <ClInclude Include="NetMessagePing.h" />
     <ClInclude Include="NetMessagePosition.h" />
     <ClInclude Include="SerializeHelper.h" />
@@ -102,6 +103,7 @@
     <ClCompile Include="NetMessageChatMessage.cpp" />
     <ClCompile Include="NetMessageConnect.cpp" />
     <ClCompile Include="NetMessageManager.cpp" />
+    <ClCompile Include="NetMessageNewClient.cpp" />
     <ClCompile Include="NetMessagePing.cpp" />
     <ClCompile Include="NetMessagePosition.cpp" />
     <ClCompile Include="stdafx.cpp">

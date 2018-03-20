@@ -27,6 +27,7 @@ enum class EMessageType : short
 	Disconnect,
 	Ping,
 	Position,
+	NewClient,
 	Size
 };
 
