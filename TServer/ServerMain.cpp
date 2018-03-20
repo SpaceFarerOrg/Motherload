@@ -9,6 +9,7 @@
 #include "NetDisconnectMessage.h"
 #include "NetMessagePing.h"
 #include "NetMessagePosition.h"
+#include "NetMessageNewClient.h"
 
 CServerMain::CServerMain()
 {
@@ -191,11 +192,22 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 		data.myClientConnectName = "OK";
 		myMessageManager.CreateMessage<CNetMessageConnect>(data);
 
-		SNetMessageChatMessageData welcomeMsg;
-		welcomeMsg.myTargetID = TO_ALL;
-		welcomeMsg.myMessage = myClients.back().myName + " has connected!";
+		for (size_t i = 0; i < myClients.size(); ++i)
+		{
+			if (i == data.myTargetID)
+				continue;
 
-		myMessageManager.CreateMessage<CNetMessageChatMessage>(welcomeMsg);
+			CNetMessageNewClient::SNetMessageNewClientData newClientData;
+			newClientData.myConnectedClient = myClients[i].myID;
+			newClientData.myTargetID = data.myTargetID;
+			myMessageManager.CreateMessage<CNetMessageNewClient>(newClientData);
+		}
+
+		CNetMessageNewClient::SNetMessageNewClientData newClientData;
+		newClientData.myConnectedClient = myClients.size();
+		newClientData.myTargetID = TO_ALL - myClients.back().myID;
+		myMessageManager.CreateMessage<CNetMessageNewClient>(newClientData);
+
 	}
 }
 

@@ -6,7 +6,7 @@ class CNetMessageNewClient : public CNetMessage
 public:
 	struct SNetMessageNewClientData : public SNetMessageData
 	{
-		size_t aConnectedClient;
+		size_t myConnectedClient;
 	};
 public:
 
