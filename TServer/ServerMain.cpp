@@ -114,13 +114,7 @@ bool CServerMain::RunServer()
 			rec.RecieveData(buff, sizeof(CNetMessage::SNetMessageData));
 			rec.UnpackMessage();
 
-			SNetMessageChatMessageData sendData;
-			sendData.myTargetID = TO_ALL - rec.GetData().mySenderID;
-			sendData.myMessage = myClients[rec.GetData().mySenderID - 1].myName + " disconnected";
-
 			DisconnectClient(rec.GetData().mySenderID);
-
-			myMessageManager.CreateMessage<CNetMessageChatMessage>(sendData);
 		}
 		break;
 		case EMessageType::Chat:
@@ -171,6 +165,7 @@ bool CServerMain::RunServer()
 void CServerMain::ShutDownServer()
 {
 	CNetMessage::SNetMessageData disconMes;
+
 	disconMes.myTargetID = TO_ALL;
 
 	myMessageManager.CreateMessage<CNetDisconnectMessage>(disconMes);
@@ -221,6 +216,13 @@ void CServerMain::DisconnectClient(short aClientID)
 {
 	PRINT(myClients[aClientID - 1].myName + " disconnected");
 	myClients[aClientID-1].myIsConnected = false;
+
+	CNetMessage::SNetMessageData msg;
+	msg.mySenderID = myClients[aClientID - 1].myID;
+	msg.myTargetID = TO_ALL - myClients[aClientID - 1].myID;
+
+	myMessageManager.CreateMessage<CNetDisconnectMessage>(msg);
+	
 }
 
 //void CServerMain::RecieveChatMessage(SProtocol aProtocol)
