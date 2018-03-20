@@ -9,6 +9,8 @@
 #include "Game.h"
 #include <Windows.h>
 #include <lmcons.h>
+#include "NetMessagePosition.h"
+#include "NetMessageNewClient.h"
 
 CClientMain::CClientMain()
 {
@@ -91,11 +93,13 @@ bool CClientMain::StartClient()
 
 bool CClientMain::RunClient()
 {
+	float dt = myClock.getElapsedTime().asSeconds();
+	myClock.restart();
 	time_t currentTime = time(nullptr);
 
 	if (myIsConnectedToServer)
 	{
-		if (currentTime - myLatestRecievedMessageTime >= 5)
+		if (currentTime - myLatestRecievedMessageTime >= 2)
 		{
 			myGame->SetIsConnected(false);
 			DisconnectFromServer();
@@ -128,6 +132,18 @@ bool CClientMain::RunClient()
 			myGame->SetIsConnected(true);
 		}
 		break;
+		case EMessageType::Disconnect:
+		{
+			CNetMessageConnect rec;
+			rec.RecieveData(buff, sizeof(SNetMessageConnectData));
+			rec.UnpackMessage();
+
+			PRINT("Server disconnected!");
+
+			myIsConnectedToServer = false;
+			myGame->SetIsConnected(false);
+		}
+		break;
 		case EMessageType::Chat:
 		{
 			CNetMessageChatMessage rec;
@@ -142,12 +158,41 @@ bool CClientMain::RunClient()
 			PRINT("Recieved ping");
 		}
 		break;
+		case EMessageType::Position:
+		{
+			CNetMessagePosition rec;
+			rec.RecieveData(buff, sizeof(CNetMessagePosition::SPositionMessageData));
+			rec.UnpackMessage();
+
+			sf::Vector2f pos;
+			rec.GetPosition(pos.x, pos.y);
+
+			myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
+		}
+		break;
+		case EMessageType::NewClient:
+		{
+			CNetMessageNewClient rec;
+			rec.RecieveData(buff, sizeof(CNetMessageNewClient::SNetMessageNewClientData));
+			rec.UnpackMessage();
+
+			myGame->AddPlayer(rec.GetConnectedClient());
+		}
+		break;
 		}
 	}
 
 	if (myIsConnectedToServer)
 	{
 		UpdateChatMode();
+	}
+
+	myPlayerUpdateTimer += dt;
+
+	if (myPlayerUpdateTimer >= 1.f / 60.f)
+	{
+		myPlayerUpdateTimer = 0.f;
+		SendPlayerData();
 	}
 
 	std::this_thread::yield();
@@ -196,5 +241,17 @@ void CClientMain::DisconnectFromServer()
 	myMessageManager.CreateMessage<CNetDisconnectMessage>(disconMes);
 
 	myMessageManager.Flush({ myServerAddress });
+}
+
+void CClientMain::SendPlayerData()
+{
+	CNetMessagePosition::SPositionMessageData data;
+	data.myX = myGame->GetPlayerPosition().x;
+	data.myY = myGame->GetPlayerPosition().y;
+
+	data.mySenderID = myID;
+	data.myTargetID = TO_ALL;
+
+	myMessageManager.CreateMessage<CNetMessagePosition>(data);
 }
 

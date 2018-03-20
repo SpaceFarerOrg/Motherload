@@ -18,31 +18,75 @@ void CGame::Init()
 
 	myConnectedStatus.setString("Not Connected");
 
+	myPlayer.Init();
+
 	myShouldRun = true;
+	myPlayerTexture.loadFromFile("sprites/player.png");
 }
 
 void CGame::Update()
 {
 	HandleWindowEvents();
 
+	float dt = myClock.getElapsedTime().asSeconds();
+	myClock.restart();
+
+	myPlayer.Update(dt);
+
+	Render();
+}
+
+void CGame::Render()
+{
 	myWindow.clear(sf::Color(50, 150, 250));
+
+	for (auto& pair : myOtherPlayers)
+	{
+		myWindow.draw(pair.second);
+	}
+
+	myPlayer.Render(&myWindow);
 
 	myWindow.draw(myConnectedStatus);
 
 	myWindow.display();
 }
 
+void CGame::UpdateOtherPlayer(int aID, const sf::Vector2f & aPos)
+{
+	myOtherPlayers[aID].setPosition(aPos);
+}
+
+void CGame::AddPlayer(size_t aID)
+{
+	sf::Sprite newSprite;
+	newSprite.setTexture(myPlayerTexture);
+
+	myOtherPlayers.insert(std::make_pair(aID, myPlayerTexture));
+}
+
 void CGame::SetIsConnected(bool aIsConnected)
 {
 	if (aIsConnected)
+	{
 		myConnectedStatus.setString("Connected");
+		myConnectedStatus.setFillColor(sf::Color::Green);
+	}
 	else
+	{
 		myConnectedStatus.setString("Not Connected");
+		myConnectedStatus.setFillColor(sf::Color::Red);
+	}
 }
 
 bool CGame::GetShouldRun() const
 {
 	return myShouldRun;
+}
+
+sf::Vector2f CGame::GetPlayerPosition()
+{
+	return myPlayer.GetPosition();
 }
 
 #include <SFML\Window\Event.hpp>

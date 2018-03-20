@@ -2,6 +2,7 @@
 #include <CommonNetworkIncludes.h>
 #include "../TShared/NetMessageManager.h"
 #include <thread>
+#include "SFML/System/Clock.hpp"
 
 class CGame;
 
@@ -35,4 +36,9 @@ private:
 	CGame* myGame;
 
 	time_t myLatestRecievedMessageTime;
+
+	sf::Clock myClock;
+	float myPlayerUpdateTimer;
+
+	void SendPlayerData();
 };
