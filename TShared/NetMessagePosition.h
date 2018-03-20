@@ -6,6 +6,9 @@ class CNetMessagePosition : public CNetMessage
 	friend class CNetMessageManager;
 
 public:
+
+	CNetMessagePosition();
+
 	struct SPositionMessageData : public SNetMessageData
 	{ 
 		float myX;

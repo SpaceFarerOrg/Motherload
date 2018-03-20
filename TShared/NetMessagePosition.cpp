@@ -2,6 +2,11 @@
 #include "NetMessagePosition.h"
 
 
+CNetMessagePosition::CNetMessagePosition()
+{
+	myData.myID = EMessageType::Position;
+}
+
 void CNetMessagePosition::GetPosition(float & aOutX, float & aOutY)
 {
 	aOutX = myData.myX;
