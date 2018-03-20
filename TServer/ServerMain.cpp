@@ -74,6 +74,7 @@ bool CServerMain::RunServer()
 			CNetMessagePosition::SPositionMessageData data;
 
 			data.myTargetID = TO_ALL - c.myID;
+			data.mySenderID = c.myID;
 			data.myX = c.myX;
 			data.myY = c.myY;
 
