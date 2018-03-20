@@ -138,10 +138,18 @@ bool CClientMain::RunClient()
 			rec.RecieveData(buff, sizeof(SNetMessageConnectData));
 			rec.UnpackMessage();
 
-			PRINT("Server disconnected!");
+			if (rec.GetData().mySenderID == 0)
+			{
+				PRINT("Server disconnected!");
 
-			myIsConnectedToServer = false;
-			myGame->SetIsConnected(false);
+				myIsConnectedToServer = false;
+				myGame->SetIsConnected(false);
+			}
+			else
+			{
+				PRINT(std::to_string(rec.GetData().mySenderID) + " disconnected! :(");
+				myGame->RemovePlayer(rec.GetData().mySenderID);
+			}
 		}
 		break;
 		case EMessageType::Chat:

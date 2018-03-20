@@ -65,6 +65,11 @@ void CGame::AddPlayer(size_t aID)
 	myOtherPlayers.insert(std::make_pair(aID, newSprite));
 }
 
+void CGame::RemovePlayer(size_t aID)
+{
+	myOtherPlayers.erase(aID);
+}
+
 void CGame::SetIsConnected(bool aIsConnected)
 {
 	if (aIsConnected)
