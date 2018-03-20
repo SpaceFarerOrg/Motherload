@@ -75,6 +75,7 @@ bool CServerMain::RunServer()
 
 			data.myTargetID = TO_ALL - c.myID;
 			data.mySenderID = c.myID;
+			//Test comments
 			data.myX = c.myX;
 			data.myY = c.myY;
 

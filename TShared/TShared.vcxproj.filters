@@ -33,6 +33,9 @@
       <Filter>MessageTypes</Filter>
     </ClInclude>
     <ClInclude Include="NetMessagePing.h" />
+    <ClInclude Include="NetMessagePosition.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -53,5 +56,8 @@
       <Filter>MessageTypes</Filter>
     </ClCompile>
     <ClCompile Include="NetMessagePing.cpp" />
+    <ClCompile Include="NetMessagePosition.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
