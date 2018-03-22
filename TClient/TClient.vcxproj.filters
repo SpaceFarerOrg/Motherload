@@ -18,6 +18,8 @@
     <ClInclude Include="ClientMain.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="DebugDrawer.h" />
+    <ClInclude Include="Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -29,5 +31,6 @@
     <ClCompile Include="ClientMain.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="DebugDrawer.cpp" />
   </ItemGroup>
 </Project>

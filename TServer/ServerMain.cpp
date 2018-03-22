@@ -51,6 +51,10 @@ bool CServerMain::StartServer()
 	unsigned long mode = 1;
 	ioctlsocket(mySocket, FIONBIO, &mode);
 
+	int bufferSize = SOCKET_BUFFER_SIZE;
+	setsockopt(mySocket, SOL_SOCKET, SO_RCVBUF, (char*)&bufferSize, sizeof(bufferSize));
+	setsockopt(mySocket, SOL_SOCKET, SO_SNDBUF, (char*)&bufferSize, sizeof(bufferSize));
+
 	int fel = bind(mySocket, (sockaddr*)&myLocalAddress, sizeof(myLocalAddress));
 
 	PRINT("Listening for new connections...");
@@ -72,15 +76,18 @@ bool CServerMain::RunServer()
 	{
 		for (SClient& c : myClients)
 		{
-			CNetMessagePosition::SPositionMessageData data;
-
-			data.myTargetID = TO_ALL - c.myID;
-			data.mySenderID = c.myID;
-			//Test comments
-			data.myX = c.myX;
-			data.myY = c.myY;
-
-			myMessageManager.CreateMessage<CNetMessagePosition>(data);
+			if (c.myIsConnected)
+			{
+				CNetMessagePosition::SPositionMessageData data;
+		
+				data.myTargetID = TO_ALL - c.myID;
+				data.mySenderID = c.myID;
+				//Test comments
+				data.myX = c.myX;
+				data.myY = c.myY;
+		
+				myMessageManager.CreateMessage<CNetMessagePosition>(data);
+			}
 		}
 
 		myTimeSincePositionSend -= POSITION_FREQ;
@@ -197,7 +204,7 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 
 		for (size_t i = 0; i < myClients.size(); ++i)
 		{
-			if (i+1 == data.myTargetID)
+			if (i+1 == data.myTargetID || myClients[i].myIsConnected == false)
 				continue;
 
 			CNetMessageNewClient::SNetMessageNewClientData newClientData;

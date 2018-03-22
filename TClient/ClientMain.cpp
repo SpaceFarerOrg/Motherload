@@ -61,6 +61,9 @@ bool CClientMain::StartClient()
 
 	bind(mySocket, (sockaddr*)&myLocalAddress, sizeof(myLocalAddress));
 
+	int bufferSize = SOCKET_BUFFER_SIZE;
+	setsockopt(mySocket, SOL_SOCKET, SO_RCVBUF, (char*)&bufferSize, sizeof(bufferSize));
+	setsockopt(mySocket, SOL_SOCKET, SO_SNDBUF, (char*)&bufferSize, sizeof(bufferSize));
 
 	int length = sizeof(myLocalAddress);
 	int name = getsockname(mySocket, (sockaddr*)&myLocalAddress, &length);
