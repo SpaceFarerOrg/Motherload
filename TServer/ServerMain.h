@@ -6,6 +6,7 @@
 #include "NetMessageManager.h"
 #include "NetMessageConnect.h"
 #include <chrono>
+#include <unordered_map>
 
 #define POSITION_FREQ 1.f/60.f
 
@@ -27,8 +28,11 @@ private:
 	//void RecieveChatMessage(SProtocol aProtocol);
 	bool VerifyClient(const SClient& aClient);
 
+	void UpdateGameObjects();
+
 	void UpdateTime();
 	float myCurrentTimeDelta;
+	float myTotalTime;
 	timePoint myCurrentTimePoint;
 
 	float myTimeSincePositionSend;
@@ -38,6 +42,9 @@ private:
 
 	std::vector<SClient> myClients;
 	std::vector<sockaddr_in> myAddressToClientLUT;
+	std::unordered_map<short, NetVector2> myGameObjects;
+	float mySpawnTimer;
+	short myAvailableID;
 
 	CNetMessageManager myMessageManager;
 	time_t myLatestPingTime;

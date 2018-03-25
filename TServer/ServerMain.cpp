@@ -10,12 +10,15 @@
 #include "NetMessagePing.h"
 #include "NetMessagePosition.h"
 #include "NetMessageNewClient.h"
+#include "NetMessageNewObject.h"
 
 CServerMain::CServerMain()
 {
 	myCurrentTimeDelta = 0;
 	myTimeSincePositionSend = 0;
 	myCurrentTimePoint = std::chrono::high_resolution_clock::now();
+	myTotalTime = 0.f;
+	mySpawnTimer = 0.f;
 }
 
 
@@ -42,7 +45,7 @@ bool CServerMain::StartServer()
 	PRINT("Server startup successful!");
 
 	myLocalAddress.sin_family = AF_INET;
-	myLocalAddress.sin_port = htons(53000);
+	myLocalAddress.sin_port = htons(54000);
 	myLocalAddress.sin_addr.s_addr = INADDR_ANY;
 
 	mySocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -65,21 +68,33 @@ bool CServerMain::StartServer()
 bool CServerMain::RunServer()
 {
 	UpdateTime();
+	UpdateGameObjects();
 
 	myTimeSincePositionSend += myCurrentTimeDelta;
 
 	if (myTimeSincePositionSend >= POSITION_FREQ)
 	{
-		for (SClient& c : myClients)
+		//for (SClient& c : myClients)
+		//{
+		//	CNetMessagePosition::SPositionMessageData data;
+		//
+		//	data.myTargetID = TO_ALL - c.myID;
+		//	data.mySenderID = c.myID;
+		//	//Test comments
+		//	data.myX = c.myX;
+		//	data.myY = c.myY;
+		//
+		//	myMessageManager.CreateMessage<CNetMessagePosition>(data);
+		//}
+
+		for (auto& object : myGameObjects)
 		{
 			CNetMessagePosition::SPositionMessageData data;
-
-			data.myTargetID = TO_ALL - c.myID;
-			data.mySenderID = c.myID;
-			//Test comments
-			data.myX = c.myX;
-			data.myY = c.myY;
-
+			data.myTargetID = TO_ALL;
+			data.mySenderID = object.first;
+			data.myX = object.second.x;
+			data.myY = object.second.y;
+		
 			myMessageManager.CreateMessage<CNetMessagePosition>(data);
 		}
 
@@ -237,6 +252,37 @@ bool CServerMain::VerifyClient(const SClient & aClient)
 	return true;
 }
 
+void CServerMain::UpdateGameObjects()
+{
+	mySpawnTimer += myCurrentTimeDelta;
+	if (mySpawnTimer > 1.f)
+	{
+		mySpawnTimer = 0.f;
+		PRINT("Spawned an Object");
+		myGameObjects.insert(std::pair<short, NetVector2>(myAvailableID, { 800.f, 400.f }));
+
+		CNetMessageNewObject::SNewObjectData data;
+		data.myTargetID = TO_ALL;
+		data.mySenderID = myAvailableID;
+		data.myX = 800.f;
+		data.myY = 450.f;
+
+		myMessageManager.CreateMessage<CNetMessageNewObject>(data);
+
+		myAvailableID++;
+	}
+
+	for (auto& object : myGameObjects)
+	{
+		//object.second.x += myCurrentTimeDelta;
+		float direction = (float)(rand() % 360) / 360.f * 6.28f;
+		object.second.y += myCurrentTimeDelta * 600.f * -cosf(myTotalTime * 3.14f);
+		object.second.x += myCurrentTimeDelta * 300 * cosf(myTotalTime);
+	}
+
+	
+}
+
 void CServerMain::UpdateTime()
 {
 	timePoint now = std::chrono::high_resolution_clock::now();
@@ -246,4 +292,5 @@ void CServerMain::UpdateTime()
 	myCurrentTimeDelta = dtNow.count();
 
 	myCurrentTimePoint = now;
+	myTotalTime += myCurrentTimeDelta;
 }

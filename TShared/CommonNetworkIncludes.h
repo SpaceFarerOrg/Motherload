@@ -28,6 +28,8 @@ enum class EMessageType : short
 	Ping,
 	Position,
 	NewClient,
+	NewObject,
+	RemoveObject,
 	Size
 };
 
@@ -55,6 +57,12 @@ struct SMessage
 			}
 		}
 	}
+};
+
+struct NetVector2
+{
+	float x;
+	float y;
 };
 
 struct SClient

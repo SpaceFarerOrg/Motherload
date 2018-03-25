@@ -39,6 +39,8 @@
     <ClInclude Include="NetMessageNewClient.h">
       <Filter>MessageTypes</Filter>
     </ClInclude>
+    <ClInclude Include="NetMessageNewObject.h" />
+    <ClInclude Include="CnetMessageRemoveObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -63,5 +65,7 @@
       <Filter>MessageTypes</Filter>
     </ClCompile>
     <ClCompile Include="NetMessageNewClient.cpp" />
+    <ClCompile Include="NetMessageNewObject.cpp" />
+    <ClCompile Include="CnetMessageRemoveObject.cpp" />
   </ItemGroup>
 </Project>

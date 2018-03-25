@@ -50,6 +50,11 @@ void CGame::Render()
 		myWindow.draw(pair.second);
 	}
 
+	for (auto& pair : myGameObjects)
+	{
+		myWindow.draw(pair.second);
+	}
+
 	myPlayer.Render(&myWindow);
 
 	myWindow.draw(myConnectedStatus);
@@ -75,6 +80,20 @@ void CGame::AddPlayer(size_t aID)
 void CGame::RemovePlayer(size_t aID)
 {
 	myOtherPlayers.erase(aID);
+}
+
+void CGame::AddObject(short aID, const sf::Vector2f & aPosition)
+{
+	sf::Sprite newSprite;
+	newSprite.setTexture(myPlayerTexture);
+	newSprite.setPosition(aPosition);
+
+	myGameObjects.insert(std::pair<short, sf::Sprite>(aID, newSprite));
+}
+
+void CGame::UpdateObject(short aID, const sf::Vector2f & aPosition)
+{
+	myGameObjects[aID].setPosition(aPosition);
 }
 
 void CGame::SetIsConnected(bool aIsConnected)

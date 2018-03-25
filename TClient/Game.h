@@ -18,6 +18,9 @@ public:
 	void AddPlayer(size_t aID);
 	void RemovePlayer(size_t aID);
 
+	void AddObject(short aID, const sf::Vector2f& aPosition);
+	void UpdateObject(short aID, const sf::Vector2f& aPosition);
+
 	void SetIsConnected(bool aIsConnected);
 	void SetKbPerSecond(float aKbPerSecond);
 	bool GetShouldRun() const;
@@ -40,5 +43,6 @@ private:
 	sf::Texture myPlayerTexture;
 	CPlayer myPlayer;
 	std::unordered_map<int, sf::Sprite> myOtherPlayers;
+	std::unordered_map<short, sf::Sprite> myGameObjects;
 
 };
