@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
+#include "DebugDrawer.h"
 
 void CGame::Init()
 {
@@ -38,6 +39,8 @@ void CGame::Update()
 
 	myPlayer.Update(dt);
 
+	CDebugDrawer::GetInstance().Update(dt);
+
 	Render();
 }
 
@@ -61,6 +64,8 @@ void CGame::Render()
 
 	myWindow.draw(myKbPerSecond);
 
+	CDebugDrawer::GetInstance().Render(&myWindow);
+
 	myWindow.display();
 }
 
@@ -73,12 +78,14 @@ void CGame::AddPlayer(size_t aID)
 {
 	sf::Sprite newSprite;
 	newSprite.setTexture(myPlayerTexture);
+	newSprite.setOrigin(myPlayerTexture.getSize().x / 2, myPlayerTexture.getSize().y / 2);
 
 	myOtherPlayers.insert(std::make_pair(aID, newSprite));
 }
 
 void CGame::RemovePlayer(size_t aID)
 {
+	CDebugDrawer::GetInstance().DrawTimedText("Player Disconnected :-(", myOtherPlayers[aID].getPosition(), 5.f, sf::Color::Red, 30, EPivot::Center);
 	myOtherPlayers.erase(aID);
 }
 
