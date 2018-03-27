@@ -24,5 +24,15 @@ namespace Math
 		return std::move(returnVector);
 	}
 
+	float GetLength(const sf::Vector2f& aVector)
+	{
+		return sqrtf(aVector.x * aVector.x + aVector.y * aVector.y);
+	}
+
+	void Normalize(sf::Vector2f& aVec)
+	{
+		float l = GetLength(aVec);
+		aVec /= l;
+	}
 
 }
