@@ -91,6 +91,7 @@
     <ClInclude Include="ClientMain.h" />
     <ClInclude Include="DebugDrawer.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameObject.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="stdafx.h" />
@@ -100,6 +101,7 @@
     <ClCompile Include="ClientMain.cpp" />
     <ClCompile Include="DebugDrawer.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="stdafx.cpp">

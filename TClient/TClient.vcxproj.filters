@@ -20,6 +20,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="DebugDrawer.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="GameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -32,5 +33,6 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="DebugDrawer.cpp" />
+    <ClCompile Include="GameObject.cpp" />
   </ItemGroup>
 </Project>

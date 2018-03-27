@@ -42,13 +42,13 @@ void CServerGameObject::Update(float aDT)
 	myPosition.y += myDirection.y * mySpeed * aDT;
 
 	if (myPosition.x < -32)
-		myPosition.x = 1600 + 32;
+		myDirection.x *= -1.f;
 	if (myPosition.x > 1600 + 32)
-		myPosition.x = -32;
+		myDirection.x *= -1.f;
 	if (myPosition.y < -32)
-		myPosition.y = 900 + 32;
+		myDirection.y *= -1.f;
 	if (myPosition.y > 900 + 32)
-		myPosition.y = -32;
+		myDirection.y *= -1.f;
 }
 
 NetVector2 CServerGameObject::GetPosition()

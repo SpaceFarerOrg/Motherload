@@ -40,6 +40,11 @@ void CGame::Update()
 
 	myPlayer.Update(dt);
 
+	for (auto& object : myGameObjects)
+	{
+		object.second.Update(dt);
+	}
+
 	CDebugDrawer::GetInstance().Update(dt);
 
 	Render();
@@ -56,7 +61,7 @@ void CGame::Render()
 
 	for (auto& pair : myGameObjects)
 	{
-		myWindow.draw(pair.second);
+		pair.second.Render(&myWindow);
 	}
 
 	myPlayer.Render(&myWindow);
@@ -97,12 +102,16 @@ void CGame::AddObject(short aID, const sf::Vector2f & aPosition)
 	newSprite.setTexture(myCircleTexture);
 	newSprite.setPosition(aPosition);
 
-	myGameObjects.insert(std::pair<short, sf::Sprite>(aID, newSprite));
+	CGameObject newObject;
+	newObject.SetTargetPosition(aPosition);
+	newObject.SetSprite(newSprite);
+
+	myGameObjects.insert(std::pair<short, CGameObject>(aID, newObject));
 }
 
 void CGame::UpdateObject(short aID, const sf::Vector2f & aPosition)
 {
-	myGameObjects[aID].setPosition(aPosition);
+	myGameObjects[aID].SetTargetPosition(aPosition);
 }
 
 void CGame::RemoveObject(short aID)

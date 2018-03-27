@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "Player.h"
+#include "GameObject.h"
 
 class CGame
 {
@@ -45,6 +46,6 @@ private:
 	sf::Texture myCircleTexture;
 	CPlayer myPlayer;
 	std::unordered_map<int, sf::Sprite> myOtherPlayers;
-	std::unordered_map<short, sf::Sprite> myGameObjects;
+	std::unordered_map<short, CGameObject> myGameObjects;
 
 };

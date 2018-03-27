@@ -4,17 +4,17 @@
 namespace Math
 {
 	template<typename T>
-	T Clamp(T aValue, T aMin, T aMax)
+	static T Clamp(T aValue, T aMin, T aMax)
 	{
 		return aValue < aMin ? aMin: (aValue > aMax ? aMax : aValue);
 	}
 
-	float Lerp(float aStart, float aTarget, float aPercentage)
+	static float Lerp(float aStart, float aTarget, float aPercentage)
 	{
 		return (1 - aPercentage) * aStart + aPercentage * aTarget;
 	}
 
-	sf::Vector2f Lerp(const sf::Vector2f& aStart, const sf::Vector2f& aEnd, float aPercentage)
+	static sf::Vector2f Lerp(const sf::Vector2f& aStart, const sf::Vector2f& aEnd, float aPercentage)
 	{
 		sf::Vector2f returnVector;
 
@@ -24,12 +24,12 @@ namespace Math
 		return std::move(returnVector);
 	}
 
-	float GetLength(const sf::Vector2f& aVector)
+	static float GetLength(const sf::Vector2f& aVector)
 	{
 		return sqrtf(aVector.x * aVector.x + aVector.y * aVector.y);
 	}
 
-	void Normalize(sf::Vector2f& aVec)
+	static void Normalize(sf::Vector2f& aVec)
 	{
 		float l = GetLength(aVec);
 		aVec /= l;

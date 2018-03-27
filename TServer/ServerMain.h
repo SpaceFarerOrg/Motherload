@@ -10,7 +10,7 @@
 #include "ServerGameObject.h"
 #include <set>
 
-#define POSITION_FREQ 1.f/60.f
+#define POSITION_FREQ 1.f/30.f
 
 typedef std::chrono::high_resolution_clock::time_point timePoint;
 
