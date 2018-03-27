@@ -11,6 +11,8 @@
 #include <lmcons.h>
 #include "NetMessagePosition.h"
 #include "NetMessageNewClient.h"
+#include "NetMessageNewObject.h"
+#include "CnetMessageRemoveObject.h"
 
 CClientMain::CClientMain()
 {
@@ -61,6 +63,9 @@ bool CClientMain::StartClient()
 
 	bind(mySocket, (sockaddr*)&myLocalAddress, sizeof(myLocalAddress));
 
+	int bufferSize = SOCKET_BUFFER_SIZE;
+	setsockopt(mySocket, SOL_SOCKET, SO_RCVBUF, (char*)&bufferSize, sizeof(bufferSize));
+	setsockopt(mySocket, SOL_SOCKET, SO_SNDBUF, (char*)&bufferSize, sizeof(bufferSize));
 
 	int length = sizeof(myLocalAddress);
 	int name = getsockname(mySocket, (sockaddr*)&myLocalAddress, &length);
@@ -74,7 +79,7 @@ bool CClientMain::StartClient()
 	//serverIP = Utilities::GetInput("Type an IP to connect with: ", "127.0.0.1");
 
 	inet_pton(AF_INET, serverIP.c_str(), &myServerAddress.sin_addr.s_addr);
-	myServerAddress.sin_port = htons(53000);
+	myServerAddress.sin_port = htons(54000);
 	myServerAddress.sin_family = AF_INET;
 
 	myMessageManager.Init(256, mySocket);
@@ -111,7 +116,7 @@ bool CClientMain::RunClient()
 
 	sockaddr_in from;
 
-	if (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, nullptr, 0) != SOCKET_ERROR)
+	while (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, nullptr, 0) != SOCKET_ERROR)
 	{
 		myLatestRecievedMessageTime = currentTime;
 
@@ -175,7 +180,8 @@ bool CClientMain::RunClient()
 			sf::Vector2f pos;
 			rec.GetPosition(pos.x, pos.y);
 
-			myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
+			//myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
+			myGame->UpdateObject(rec.GetData().mySenderID, pos);
 		}
 		break;
 		case EMessageType::NewClient:
@@ -185,6 +191,27 @@ bool CClientMain::RunClient()
 			rec.UnpackMessage();
 
 			myGame->AddPlayer(rec.GetConnectedClient());
+		}
+		break;
+		case EMessageType::NewObject:
+		{
+			CNetMessageNewObject rec;
+			rec.RecieveData(buff, sizeof(CNetMessageNewObject::SNewObjectData));
+			rec.UnpackMessage();
+
+			sf::Vector2f position;
+			rec.GetPosition(position.x, position.y);
+
+			myGame->AddObject(rec.GetData().mySenderID, position);
+		}
+		break;
+		case EMessageType::RemoveObject:
+		{
+			CnetMessageRemoveObject rec;
+			rec.RecieveData(buff, sizeof(CnetMessageRemoveObject::SRemoveObjectData));
+			rec.UnpackMessage();
+
+			myGame->RemoveObject(rec.GetData().mySenderID);
 		}
 		break;
 		}
@@ -198,7 +225,7 @@ bool CClientMain::RunClient()
 		if (myPlayerUpdateTimer >= 1.f / 60.f)
 		{
 			myPlayerUpdateTimer = 0.f;
-			SendPlayerData();
+			//SendPlayerData();
 		}
 	}
 

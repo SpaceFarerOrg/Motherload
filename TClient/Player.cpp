@@ -16,6 +16,7 @@ void CPlayer::Init()
 {
 	myTexture.loadFromFile("Sprites/player.png");
 	mySprite.setTexture(myTexture);
+	mySprite.setOrigin(myTexture.getSize().x / 2, myTexture.getSize().y / 2);
 
 	mySpeed = 250.f;
 }

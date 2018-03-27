@@ -24,6 +24,7 @@
     <ClInclude Include="ServerMain.h">
       <Filter>Server</Filter>
     </ClInclude>
+    <ClInclude Include="ServerGameObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -38,5 +39,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Server</Filter>
     </ClCompile>
+    <ClCompile Include="ServerGameObject.cpp" />
   </ItemGroup>
 </Project>

@@ -89,13 +89,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ClientMain.h" />
+    <ClInclude Include="DebugDrawer.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ClientMain.cpp" />
+    <ClCompile Include="DebugDrawer.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />

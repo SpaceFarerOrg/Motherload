@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CnetMessageRemoveObject.h" />
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
     <ClInclude Include="NetDisconnectMessage.h" />
@@ -90,6 +91,7 @@
     <ClInclude Include="NetMessageConnect.h" />
     <ClInclude Include="NetMessageManager.h" />
     <ClInclude Include="NetMessageNewClient.h" />
+    <ClInclude Include="NetMessageNewObject.h" />
     <ClInclude Include="NetMessagePing.h" />
     <ClInclude Include="NetMessagePosition.h" />
     <ClInclude Include="SerializeHelper.h" />
@@ -98,12 +100,14 @@
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CnetMessageRemoveObject.cpp" />
     <ClCompile Include="NetDisconnectMessage.cpp" />
     <ClCompile Include="NetMessage.cpp" />
     <ClCompile Include="NetMessageChatMessage.cpp" />
     <ClCompile Include="NetMessageConnect.cpp" />
     <ClCompile Include="NetMessageManager.cpp" />
     <ClCompile Include="NetMessageNewClient.cpp" />
+    <ClCompile Include="NetMessageNewObject.cpp" />
     <ClCompile Include="NetMessagePing.cpp" />
     <ClCompile Include="NetMessagePosition.cpp" />
     <ClCompile Include="stdafx.cpp">

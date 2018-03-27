@@ -16,6 +16,7 @@
 #include <atomic>
 
 #define MAX_BUFFER_SIZE 512
+#define SOCKET_BUFFER_SIZE 65000
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -28,6 +29,8 @@ enum class EMessageType : short
 	Ping,
 	Position,
 	NewClient,
+	NewObject,
+	RemoveObject,
 	Size
 };
 
@@ -55,6 +58,12 @@ struct SMessage
 			}
 		}
 	}
+};
+
+struct NetVector2
+{
+	float x;
+	float y;
 };
 
 struct SClient
