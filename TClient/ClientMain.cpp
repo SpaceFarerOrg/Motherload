@@ -12,6 +12,7 @@
 #include "NetMessagePosition.h"
 #include "NetMessageNewClient.h"
 #include "NetMessageNewObject.h"
+#include "CnetMessageRemoveObject.h"
 
 CClientMain::CClientMain()
 {
@@ -115,7 +116,7 @@ bool CClientMain::RunClient()
 
 	sockaddr_in from;
 
-	if (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, nullptr, 0) != SOCKET_ERROR)
+	while (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, nullptr, 0) != SOCKET_ERROR)
 	{
 		myLatestRecievedMessageTime = currentTime;
 
@@ -203,6 +204,16 @@ bool CClientMain::RunClient()
 
 			myGame->AddObject(rec.GetData().mySenderID, position);
 		}
+		break;
+		case EMessageType::RemoveObject:
+		{
+			CnetMessageRemoveObject rec;
+			rec.RecieveData(buff, sizeof(CnetMessageRemoveObject::SRemoveObjectData));
+			rec.UnpackMessage();
+
+			myGame->RemoveObject(rec.GetData().mySenderID);
+		}
+		break;
 		}
 	}
 

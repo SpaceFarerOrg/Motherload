@@ -28,6 +28,7 @@ void CGame::Init()
 
 	myShouldRun = true;
 	myPlayerTexture.loadFromFile("sprites/player.png");
+	myCircleTexture.loadFromFile("sprites/circle.png");
 }
 
 void CGame::Update()
@@ -92,7 +93,8 @@ void CGame::RemovePlayer(size_t aID)
 void CGame::AddObject(short aID, const sf::Vector2f & aPosition)
 {
 	sf::Sprite newSprite;
-	newSprite.setTexture(myPlayerTexture);
+	newSprite.setOrigin(32, 32);
+	newSprite.setTexture(myCircleTexture);
 	newSprite.setPosition(aPosition);
 
 	myGameObjects.insert(std::pair<short, sf::Sprite>(aID, newSprite));
@@ -101,6 +103,11 @@ void CGame::AddObject(short aID, const sf::Vector2f & aPosition)
 void CGame::UpdateObject(short aID, const sf::Vector2f & aPosition)
 {
 	myGameObjects[aID].setPosition(aPosition);
+}
+
+void CGame::RemoveObject(short aID)
+{
+	myGameObjects.erase(aID);
 }
 
 void CGame::SetIsConnected(bool aIsConnected)

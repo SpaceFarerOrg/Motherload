@@ -11,6 +11,7 @@
 #include "NetMessagePosition.h"
 #include "NetMessageNewClient.h"
 #include "NetMessageNewObject.h"
+#include "CnetMessageRemoveObject.h"
 
 CServerMain::CServerMain()
 {
@@ -66,6 +67,8 @@ bool CServerMain::StartServer()
 
 	myLatestPingTime = time(0);
 
+	myAvailableID = 1;
+
 	return true;
 }
 
@@ -99,8 +102,8 @@ bool CServerMain::RunServer()
 			CNetMessagePosition::SPositionMessageData data;
 			data.myTargetID = TO_ALL;
 			data.mySenderID = object.first;
-			data.myX = object.second.x;
-			data.myY = object.second.y;
+			data.myX = object.second.GetPosition().x;
+			data.myY = object.second.GetPosition().y;
 		
 			myMessageManager.CreateMessage<CNetMessagePosition>(data);
 		}
@@ -228,6 +231,17 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 			myMessageManager.CreateMessage<CNetMessageNewClient>(newClientData);
 		}
 
+		for (auto& object : myGameObjects)
+		{
+			CNetMessageNewObject::SNewObjectData data;
+			data.mySenderID = object.first;
+			data.myTargetID = myClients.size();
+			data.myX = object.second.GetPosition().x;
+			data.myY = object.second.GetPosition().y;
+
+			myMessageManager.CreateMessage<CNetMessageNewObject>(data);
+		}
+
 		CNetMessageNewClient::SNetMessageNewClientData newClientData;
 		newClientData.myConnectedClient = myClients.size();
 		newClientData.myTargetID = TO_ALL - myClients.back().myID;
@@ -266,7 +280,9 @@ void CServerMain::UpdateGameObjects()
 	{
 		mySpawnTimer = 0.f;
 		PRINT("Spawned an Object");
-		myGameObjects.insert(std::pair<short, NetVector2>(myAvailableID, { 800.f, 400.f }));
+		CServerGameObject newObject;
+		newObject.Init({ 800.f, 400.f });
+		myGameObjects.insert(std::pair<short, CServerGameObject>(myAvailableID, newObject));
 
 		CNetMessageNewObject::SNewObjectData data;
 		data.myTargetID = TO_ALL;
@@ -281,13 +297,40 @@ void CServerMain::UpdateGameObjects()
 
 	for (auto& object : myGameObjects)
 	{
-		//object.second.x += myCurrentTimeDelta;
-		float direction = (float)(rand() % 360) / 360.f * 6.28f;
-		object.second.y += myCurrentTimeDelta * 600.f * -cosf(myTotalTime * 3.14f);
-		object.second.x += myCurrentTimeDelta * 300 * cosf(myTotalTime);
+		object.second.Update(myCurrentTimeDelta);
+
+		for (auto& other : myGameObjects)
+		{
+			if (object.first == other.first)
+				continue;
+
+			float distanceMax = 60;
+			NetVector2 between = object.second.GetPosition();
+			between.x -= other.second.GetPosition().x;
+			between.y -= other.second.GetPosition().y;
+			float length = sqrt(between.x * between.x + between.y * between.y);
+
+			if (length < distanceMax)
+			{
+
+				CnetMessageRemoveObject::SRemoveObjectData removeData;
+				removeData.myTargetID = TO_ALL;
+				removeData.mySenderID = object.first;
+				myMessageManager.CreateMessage<CnetMessageRemoveObject>(removeData);
+				removeData.mySenderID = other.first;
+				myMessageManager.CreateMessage<CnetMessageRemoveObject>(removeData);
+				
+				myIDsToRemove.insert(other.first);
+				myIDsToRemove.insert(object.first);
+			}
+		}
 	}
 
-	
+	for (const short& id : myIDsToRemove)
+	{
+		myGameObjects.erase(id);
+	}
+	myIDsToRemove.clear();
 }
 
 void CServerMain::UpdateTime()

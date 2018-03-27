@@ -7,6 +7,8 @@
 #include "NetMessageConnect.h"
 #include <chrono>
 #include <unordered_map>
+#include "ServerGameObject.h"
+#include <set>
 
 #define POSITION_FREQ 1.f/60.f
 
@@ -42,7 +44,8 @@ private:
 
 	std::vector<SClient> myClients;
 	std::vector<sockaddr_in> myAddressToClientLUT;
-	std::unordered_map<short, NetVector2> myGameObjects;
+	std::unordered_map<short, CServerGameObject> myGameObjects;
+	std::set<short> myIDsToRemove;
 	float mySpawnTimer;
 	short myAvailableID;
 
