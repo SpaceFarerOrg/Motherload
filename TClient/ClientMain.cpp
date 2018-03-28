@@ -2,17 +2,11 @@
 #include "ClientMain.h"
 #include <iostream>
 #include "Utilities.h"
-#include "NetMessageConnect.h"
-#include "NetDisconnectMessage.h"
-#include "NetMessageChatMessage.h"
 #include <fstream>
 #include "Game.h"
 #include <Windows.h>
 #include <lmcons.h>
-#include "NetMessagePosition.h"
-#include "NetMessageNewClient.h"
-#include "NetMessageNewObject.h"
-#include "CnetMessageRemoveObject.h"
+#include "NetMessages.h"
 
 CClientMain::CClientMain()
 {
@@ -47,7 +41,7 @@ bool CClientMain::StartClient()
 	GetUserName(username, &username_len);
 
 	std::wstring wun = username;
-	std::string userName(wun.begin(), wun.end());
+	myUserName = std::string(wun.begin(), wun.end());
 
 	PRINT("Client startup successful!");
 
@@ -84,11 +78,7 @@ bool CClientMain::StartClient()
 
 	myMessageManager.Init(256, mySocket);
 
-	SNetMessageConnectData msgData;
-	msgData.myTargetID = TO_ALL;
-	msgData.myClientConnectName = userName;
-
-	myMessageManager.CreateMessage<CNetMessageConnect>(msgData);
+	TryToConnect(myUserName);
 
 	myShouldRun.store(true);
 	myInput = "";
@@ -108,6 +98,7 @@ bool CClientMain::RunClient()
 		{
 			myGame->SetIsConnected(false);
 			DisconnectFromServer();
+			myIsConnectedToServer = false;
 		}
 	}
 
@@ -122,98 +113,124 @@ bool CClientMain::RunClient()
 
 		size_t buffIndex = 0;
 		EMessageType id = static_cast<EMessageType>(buff[buffIndex]);
+		bool shouldSkip = false;
 
-		switch (id)
+		CNetMessage base;
+		base.RecieveData(buff, sizeof(CNetMessage::SNetMessageData));
+		base.UnpackMessage();
 		{
-		case EMessageType::Connect:
-		{
-			CNetMessageConnect rec;
-			rec.RecieveData(buff, sizeof(SNetMessageConnectData));
-			rec.UnpackMessage();
-
-			PRINT("You are client no. " + std::to_string(rec.GetData().myTargetID) + " Server says " + rec.GetClientName());
-			myIsConnectedToServer = true;
-			myID = rec.GetData().myTargetID;
-			myGame->SetIsConnected(true);
+		if (base.GetData().myMessageID > 0 && id != EMessageType::AcceptGuaranteed)
+			myMessageManager.AcceptGuaranteedMessage(0, myID, base.GetData().myMessageID);
+			//if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
+			//{
+			//	shouldSkip = true;
+			//}
+			myRecievedGuaranteedMessages.insert(base.GetData().myMessageID);
 		}
-		break;
-		case EMessageType::Disconnect:
-		{
-			CNetMessageConnect rec;
-			rec.RecieveData(buff, sizeof(SNetMessageConnectData));
-			rec.UnpackMessage();
 
-			if (rec.GetData().mySenderID == 0)
+		if (shouldSkip == false)
+		{
+			switch (id)
 			{
-				PRINT("Server disconnected!");
-
-				myIsConnectedToServer = false;
-				myGame->SetIsConnected(false);
-			}
-			else
+			case EMessageType::Connect:
 			{
-				PRINT("A player disconnected! :(");
-				myGame->RemovePlayer(rec.GetData().mySenderID);
+				if (myIsConnectedToServer == false)
+				{
+					CNetMessageConnect rec;
+					rec.RecieveData(buff, sizeof(SNetMessageConnectData));
+					rec.UnpackMessage();
+
+					PRINT("You are client no. " + std::to_string(rec.GetData().myTargetID) + " Server says " + rec.GetClientName());
+					myIsConnectedToServer = true;
+					myID = rec.GetData().myTargetID;
+					myGame->SetIsConnected(true);
+				}
 			}
-		}
-		break;
-		case EMessageType::Chat:
-		{
-			CNetMessageChatMessage rec;
-			rec.RecieveData(buff, sizeof(SNetMessageChatMessageData));
-			rec.UnpackMessage();
+			break;
+			case EMessageType::Disconnect:
+			{
+				CNetMessageConnect rec;
+				rec.RecieveData(buff, sizeof(SNetMessageConnectData));
+				rec.UnpackMessage();
 
-			PRINT(rec.GetMessage());
-		}
-		break;
-		case EMessageType::Ping:
-		{
-			PRINT("Recieved ping");
-		}
-		break;
-		case EMessageType::Position:
-		{
-			CNetMessagePosition rec;
-			rec.RecieveData(buff, sizeof(CNetMessagePosition::SPositionMessageData));
-			rec.UnpackMessage();
+				if (rec.GetData().mySenderID == 0)
+				{
+					PRINT("Server disconnected!");
 
-			sf::Vector2f pos;
-			rec.GetPosition(pos.x, pos.y);
+					myIsConnectedToServer = false;
+					myGame->SetIsConnected(false);
+				}
+				else
+				{
+					PRINT("A player disconnected! :(");
+					myGame->RemovePlayer(rec.GetData().mySenderID);
+				}
+			}
+			break;
+			case EMessageType::Chat:
+			{
+				CNetMessageChatMessage rec;
+				rec.RecieveData(buff, sizeof(SNetMessageChatMessageData));
+				rec.UnpackMessage();
 
-			//myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
-			myGame->UpdateObject(rec.GetData().mySenderID, pos);
-		}
-		break;
-		case EMessageType::NewClient:
-		{
-			CNetMessageNewClient rec;
-			rec.RecieveData(buff, sizeof(CNetMessageNewClient::SNetMessageNewClientData));
-			rec.UnpackMessage();
+				PRINT(rec.GetMessage());
+			}
+			break;
+			case EMessageType::Ping:
+			{
+				PRINT("Recieved ping");
+			}
+			break;
+			case EMessageType::Position:
+			{
+				CNetMessagePosition rec;
+				rec.RecieveData(buff, sizeof(CNetMessagePosition::SPositionMessageData));
+				rec.UnpackMessage();
 
-			myGame->AddPlayer(rec.GetConnectedClient());
-		}
-		break;
-		case EMessageType::NewObject:
-		{
-			CNetMessageNewObject rec;
-			rec.RecieveData(buff, sizeof(CNetMessageNewObject::SNewObjectData));
-			rec.UnpackMessage();
+				sf::Vector2f pos;
+				rec.GetPosition(pos.x, pos.y);
 
-			sf::Vector2f position;
-			rec.GetPosition(position.x, position.y);
+				//myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
+				myGame->UpdateObject(rec.GetData().mySenderID, pos);
+			}
+			break;
+			case EMessageType::NewClient:
+			{
+				CNetMessageNewClient rec;
+				rec.RecieveData(buff, sizeof(CNetMessageNewClient::SNetMessageNewClientData));
+				rec.UnpackMessage();
 
-			myGame->AddObject(rec.GetData().mySenderID, position);
-		}
-		break;
-		case EMessageType::RemoveObject:
-		{
-			CnetMessageRemoveObject rec;
-			rec.RecieveData(buff, sizeof(CnetMessageRemoveObject::SRemoveObjectData));
-			rec.UnpackMessage();
+				myGame->AddPlayer(rec.GetConnectedClient());
+			}
+			break;
+			case EMessageType::NewObject:
+			{
+				CNetMessageNewObject rec;
+				rec.RecieveData(buff, sizeof(CNetMessageNewObject::SNewObjectData));
+				rec.UnpackMessage();
 
-			myGame->RemoveObject(rec.GetData().mySenderID);
-		}
-		break;
+				sf::Vector2f position;
+				rec.GetPosition(position.x, position.y);
+
+				myGame->AddObject(rec.GetData().mySenderID, position);
+			}
+			break;
+			case EMessageType::RemoveObject:
+			{
+				CNetMessageRemoveObject rec;
+				rec.RecieveData(buff, sizeof(CNetMessageRemoveObject::SRemoveObjectData));
+				rec.UnpackMessage();
+
+				myGame->RemoveObject(rec.GetData().mySenderID);
+			}
+			break;
+			case EMessageType::AcceptGuaranteed:
+			{
+				unsigned int msgID = base.GetData().myMessageID;
+				myMessageManager.VerifyGuaranteedMessage(msgID);
+			}
+			break;
+			}
 		}
 	}
 
@@ -227,6 +244,10 @@ bool CClientMain::RunClient()
 			myPlayerUpdateTimer = 0.f;
 			//SendPlayerData();
 		}
+	}
+	else
+	{
+		TryToConnect(myUserName);
 	}
 
 
@@ -280,6 +301,15 @@ void CClientMain::DisconnectFromServer()
 	myMessageManager.CreateMessage<CNetDisconnectMessage>(disconMes);
 
 	myMessageManager.Flush({ myServerAddress });
+}
+
+void CClientMain::TryToConnect(const std::string& aUserName)
+{
+	SNetMessageConnectData msgData;
+	msgData.myTargetID = 0;
+	msgData.myClientConnectName = aUserName;
+
+	myMessageManager.CreateMessage<CNetMessageConnect>(msgData);
 }
 
 void CClientMain::SendPlayerData()

@@ -32,15 +32,25 @@
     <ClInclude Include="NetMessageConnect.h">
       <Filter>MessageTypes</Filter>
     </ClInclude>
-    <ClInclude Include="NetMessagePing.h" />
     <ClInclude Include="NetMessagePosition.h">
       <Filter>MessageTypes</Filter>
     </ClInclude>
     <ClInclude Include="NetMessageNewClient.h">
       <Filter>MessageTypes</Filter>
     </ClInclude>
-    <ClInclude Include="NetMessageNewObject.h" />
-    <ClInclude Include="CnetMessageRemoveObject.h" />
+    <ClInclude Include="NetMessageRemoveObject.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessageNewObject.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessagePing.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessages.h">
+      <Filter>MessageTypes</Filter>
+    </ClInclude>
+    <ClInclude Include="NetMessageAcceptGuaranteedMessage.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -60,12 +70,21 @@
     <ClCompile Include="NetMessageConnect.cpp">
       <Filter>MessageTypes</Filter>
     </ClCompile>
-    <ClCompile Include="NetMessagePing.cpp" />
     <ClCompile Include="NetMessagePosition.cpp">
       <Filter>MessageTypes</Filter>
     </ClCompile>
-    <ClCompile Include="NetMessageNewClient.cpp" />
-    <ClCompile Include="NetMessageNewObject.cpp" />
-    <ClCompile Include="CnetMessageRemoveObject.cpp" />
+    <ClCompile Include="NetMessageRemoveObject.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessageNewObject.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessageNewClient.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessagePing.cpp">
+      <Filter>MessageTypes</Filter>
+    </ClCompile>
+    <ClCompile Include="NetMessageAcceptGuaranteedMessage.cpp" />
   </ItemGroup>
 </Project>

@@ -5,13 +5,7 @@
 #include <iostream>
 #include <string>
 #include "Utilities.h"
-#include "NetMessageChatMessage.h"
-#include "NetDisconnectMessage.h"
-#include "NetMessagePing.h"
-#include "NetMessagePosition.h"
-#include "NetMessageNewClient.h"
-#include "NetMessageNewObject.h"
-#include "CnetMessageRemoveObject.h"
+#include "NetMessages.h"
 
 CServerMain::CServerMain()
 {
@@ -118,58 +112,82 @@ bool CServerMain::RunServer()
 
 	char buff[MAX_BUFFER_SIZE];
 	ZeroMemory(buff, MAX_BUFFER_SIZE);
-	if (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, (sockaddr*)&from, &fromlen) != SOCKET_ERROR)
+	Sleep(1);
+	while (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, (sockaddr*)&from, &fromlen) != SOCKET_ERROR)
 	{
 		size_t buffIndex = 0;
 		EMessageType id = static_cast<EMessageType>(buff[buffIndex]);
+		bool shouldSkip = false;
 
-		switch (id)
+		CNetMessage base;
+		base.RecieveData(buff, sizeof(CNetMessage::SNetMessageData));
+		base.UnpackMessage();
+		if (base.GetData().myMessageID > 0 && id != EMessageType::AcceptGuaranteed)
 		{
-		case EMessageType::Connect:
-		{
-			CNetMessageConnect rec;
-			rec.RecieveData(buff, sizeof(SNetMessageConnectData));
-			rec.UnpackMessage();
-			ConnectWith(rec, from);
+			myMessageManager.AcceptGuaranteedMessage(base.GetData().mySenderID, 0, base.GetData().myMessageID);
+			//if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
+			//{
+			//	shouldSkip = true;
+			//}
+			myRecievedGuaranteedMessages.insert(base.GetData().myMessageID);
 		}
-		break;
-		case  EMessageType::Disconnect:
-		{
-			CNetDisconnectMessage rec;
-			rec.RecieveData(buff, sizeof(CNetMessage::SNetMessageData));
-			rec.UnpackMessage();
 
-			DisconnectClient(rec.GetData().mySenderID);
-		}
-		break;
-		case EMessageType::Chat:
+		if (shouldSkip == false)
 		{
-			CNetMessageChatMessage rec;
-			rec.RecieveData(buff, sizeof(SNetMessageChatMessageData));
-			rec.UnpackMessage();
-			PRINT(myClients[rec.GetData().mySenderID-1].myName + ": " + rec.GetMessage());
+			switch (id)
+			{
+			case EMessageType::Connect:
+			{
+				CNetMessageConnect rec;
+				rec.RecieveData(buff, sizeof(SNetMessageConnectData));
+				rec.UnpackMessage();
+				ConnectWith(rec, from);
+			}
+			break;
+			case  EMessageType::Disconnect:
+			{
+				CNetDisconnectMessage rec;
+				rec.RecieveData(buff, sizeof(CNetMessage::SNetMessageData));
+				rec.UnpackMessage();
 
-			SNetMessageChatMessageData chatMsgData;
-			chatMsgData.myMessage = myClients[rec.GetData().mySenderID-1].myName + ": " + rec.GetMessage();
-			chatMsgData.myTargetID = TO_ALL - rec.GetData().mySenderID;
-			
-			myMessageManager.CreateMessage<CNetMessageChatMessage>(chatMsgData);
-		}
-		break;
-		case EMessageType::Position:
-		{
-			CNetMessagePosition rec;
-			rec.RecieveData(buff, sizeof(CNetMessagePosition::SPositionMessageData));
-			rec.UnpackMessage();
+				DisconnectClient(rec.GetData().mySenderID);
+			}
+			break;
+			case EMessageType::Chat:
+			{
+				CNetMessageChatMessage rec;
+				rec.RecieveData(buff, sizeof(SNetMessageChatMessageData));
+				rec.UnpackMessage();
+				PRINT(myClients[rec.GetData().mySenderID - 1].myName + ": " + rec.GetMessage());
 
-			float x,y;
-			rec.GetPosition(x, y);
-			
-			//Update the position of the client in world!
-			myClients[rec.GetData().mySenderID-1].myX = x;
-			myClients[rec.GetData().mySenderID-1].myY = y;
-		}
-		break;
+				SNetMessageChatMessageData chatMsgData;
+				chatMsgData.myMessage = myClients[rec.GetData().mySenderID - 1].myName + ": " + rec.GetMessage();
+				chatMsgData.myTargetID = TO_ALL - rec.GetData().mySenderID;
+
+				myMessageManager.CreateMessage<CNetMessageChatMessage>(chatMsgData);
+			}
+			break;
+			case EMessageType::Position:
+			{
+				CNetMessagePosition rec;
+				rec.RecieveData(buff, sizeof(CNetMessagePosition::SPositionMessageData));
+				rec.UnpackMessage();
+
+				float x, y;
+				rec.GetPosition(x, y);
+
+				//Update the position of the client in world!
+				myClients[rec.GetData().mySenderID - 1].myX = x;
+				myClients[rec.GetData().mySenderID - 1].myY = y;
+			}
+			break;
+			case EMessageType::AcceptGuaranteed:
+			{
+				unsigned int msgID = base.GetData().myMessageID;
+				myMessageManager.VerifyGuaranteedMessage(msgID);
+			}
+			break;
+			}
 		}
 	}
 
@@ -207,10 +225,10 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 	SClient newClient;
 	newClient.myName = aConnectMessage.GetClientName();
 
-	PRINT("Client " + newClient.myName + " connected");
 
 	if (VerifyClient(newClient))
 	{
+		PRINT("Client " + newClient.myName + " connected");
 		myClients.push_back(newClient);
 		myClients.back().myID = myClients.size();
 		myAddressToClientLUT.push_back(aReturnAddress);
@@ -218,7 +236,8 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 		SNetMessageConnectData data;
 		data.myTargetID = myClients.size();
 		data.myClientConnectName = "OK";
-		myMessageManager.CreateMessage<CNetMessageConnect>(data);
+		data.mySenderID = 0;
+		myMessageManager.CreateGuaranteedMessage<CNetMessageConnect>(data);
 
 		for (size_t i = 0; i < myClients.size(); ++i)
 		{
@@ -239,13 +258,8 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 			data.myX = object.second.GetPosition().x;
 			data.myY = object.second.GetPosition().y;
 
-			myMessageManager.CreateMessage<CNetMessageNewObject>(data);
+			myMessageManager.CreateGuaranteedMessage<CNetMessageNewObject>(data);
 		}
-
-		CNetMessageNewClient::SNetMessageNewClientData newClientData;
-		newClientData.myConnectedClient = myClients.size();
-		newClientData.myTargetID = TO_ALL - myClients.back().myID;
-		myMessageManager.CreateMessage<CNetMessageNewClient>(newClientData);
 
 	}
 }
@@ -270,6 +284,23 @@ void CServerMain::DisconnectClient(short aClientID)
 
 bool CServerMain::VerifyClient(const SClient & aClient)
 {
+	for (SClient& client : myClients)
+	{
+		if (client.myName == aClient.myName)
+		{
+			PRINT("Client " + client.myName + " reconnected!");
+			client.myIsConnected = true;
+
+			SNetMessageConnectData data;
+			data.myTargetID = myClients.size();
+			data.myClientConnectName = "OK";
+			data.mySenderID = 0;
+			myMessageManager.CreateMessage<CNetMessageConnect>(data);
+
+			return false;
+		}
+	}
+
 	return true;
 }
 
@@ -284,13 +315,15 @@ void CServerMain::UpdateGameObjects()
 		newObject.Init({ 800.f, 400.f });
 		myGameObjects.insert(std::pair<short, CServerGameObject>(myAvailableID, newObject));
 
-		CNetMessageNewObject::SNewObjectData data;
-		data.myTargetID = TO_ALL;
-		data.mySenderID = myAvailableID;
-		data.myX = 800.f;
-		data.myY = 450.f;
-
-		myMessageManager.CreateMessage<CNetMessageNewObject>(data);
+		for (SClient& client : myClients)
+		{
+			CNetMessageNewObject::SNewObjectData data;
+			data.myTargetID = client.myID;
+			data.mySenderID = myAvailableID;
+			data.myX = 800.f;
+			data.myY = 450.f;
+			myMessageManager.CreateGuaranteedMessage<CNetMessageNewObject>(data);
+		}
 
 		myAvailableID++;
 	}
@@ -312,16 +345,18 @@ void CServerMain::UpdateGameObjects()
 
 			if (length < distanceMax)
 			{
+				for (SClient& client : myClients)
+				{
+					CNetMessageRemoveObject::SRemoveObjectData removeData;
+					removeData.myTargetID = client.myID;
+					removeData.mySenderID = object.first;
+					myMessageManager.CreateGuaranteedMessage<CNetMessageRemoveObject>(removeData);
+					removeData.mySenderID = other.first;
+					myMessageManager.CreateGuaranteedMessage<CNetMessageRemoveObject>(removeData);
 
-				CnetMessageRemoveObject::SRemoveObjectData removeData;
-				removeData.myTargetID = TO_ALL;
-				removeData.mySenderID = object.first;
-				myMessageManager.CreateMessage<CnetMessageRemoveObject>(removeData);
-				removeData.mySenderID = other.first;
-				myMessageManager.CreateMessage<CnetMessageRemoveObject>(removeData);
-				
-				myIDsToRemove.insert(other.first);
-				myIDsToRemove.insert(object.first);
+					myIDsToRemove.insert(other.first);
+					myIDsToRemove.insert(object.first);
+				}
 			}
 		}
 	}

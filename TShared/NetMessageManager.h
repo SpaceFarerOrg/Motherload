@@ -3,8 +3,9 @@
 #define _SCL_SECURE_NO_WARNINGS
 
 #include "CommonNetworkIncludes.h"
-#include <vector>
 #include "NetMessage.h"
+#include <vector>
+#include <unordered_map>
 #include <chrono>
 
 class CNetMessageManager
@@ -20,18 +21,29 @@ public:
 	template<typename T, typename SData>
 	void CreateMessage(SData aData);
 
+	template<typename T, typename SData>
+	void CreateGuaranteedMessage(SData aData);
+
 	void Flush(const std::vector<sockaddr_in>& aAddressList);
 
 	void Update(float aDT);
 	int GetSentDataLastSecond();
 
+	void AcceptGuaranteedMessage(unsigned short aToID, unsigned short aFromID, unsigned int aMessageID);
+	void VerifyGuaranteedMessage(unsigned int aMessageID);
+
 private:
+	void FlushRegularMessages(const std::vector<sockaddr_in>& aAddressList);
+	void SendGuaranteedMessages(const std::vector<sockaddr_in>& aAddressList);
+
 	std::vector<CNetMessage*> myMessages;
+	std::unordered_map<unsigned int, CNetMessage*> myGuaranteedMessages;
 	SOCKET mySocket;
 
 	float myTimer;
 	int mySentLastSecond;
 	int mySentThisSecond;
+	unsigned int myAvailableID;
 };
 
 template<typename T, typename SData>
@@ -45,4 +57,25 @@ inline void CNetMessageManager::CreateMessage(SData aData)
 	newMessage->Create(aData);
 
 	myMessages.push_back(newMessage);
+}
+
+template<typename T, typename SData>
+inline void CNetMessageManager::CreateGuaranteedMessage(SData aData)
+{
+	T* newMessage = new T();
+
+	if (aData.myTargetID <= 0)
+	{
+		PRINT("Do not use targetID TO_ALL with guaranteed messages, instead create a message per reciever.");
+	}
+	else
+	{
+		std::chrono::seconds msSinceStartOfTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
+		aData.myTimeStamp = msSinceStartOfTime.count();
+		aData.myMessageID = ++myAvailableID;
+
+		newMessage->Create(aData);
+
+		myGuaranteedMessages.insert(std::pair<unsigned int, CNetMessage*>(aData.myMessageID, newMessage));
+	}
 }

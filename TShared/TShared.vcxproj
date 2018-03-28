@@ -82,7 +82,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CnetMessageRemoveObject.h" />
+    <ClInclude Include="NetMessageAcceptGuaranteedMessage.h" />
+    <ClInclude Include="NetMessageRemoveObject.h" />
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
     <ClInclude Include="NetDisconnectMessage.h" />
@@ -94,13 +95,15 @@
     <ClInclude Include="NetMessageNewObject.h" />
     <ClInclude Include="NetMessagePing.h" />
     <ClInclude Include="NetMessagePosition.h" />
+    <ClInclude Include="NetMessages.h" />
     <ClInclude Include="SerializeHelper.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CnetMessageRemoveObject.cpp" />
+    <ClCompile Include="NetMessageAcceptGuaranteedMessage.cpp" />
+    <ClCompile Include="NetMessageRemoveObject.cpp" />
     <ClCompile Include="NetDisconnectMessage.cpp" />
     <ClCompile Include="NetMessage.cpp" />
     <ClCompile Include="NetMessageChatMessage.cpp" />

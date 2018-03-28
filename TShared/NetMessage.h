@@ -17,6 +17,8 @@ public:
 		unsigned int myTimeStamp;
 		unsigned short mySenderID;
 		short myTargetID;
+
+		unsigned int myMessageID = 0;
 	};
 
 	void PackMessage();

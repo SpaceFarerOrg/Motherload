@@ -51,5 +51,6 @@ private:
 
 	CNetMessageManager myMessageManager;
 	time_t myLatestPingTime;
+	std::set<unsigned int> myRecievedGuaranteedMessages;
 };
 

@@ -31,6 +31,7 @@ enum class EMessageType : short
 	NewClient,
 	NewObject,
 	RemoveObject,
+	AcceptGuaranteed,
 	Size
 };
 

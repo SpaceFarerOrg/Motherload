@@ -3,6 +3,7 @@
 #include "../TShared/NetMessageManager.h"
 #include <thread>
 #include "SFML/System/Clock.hpp"
+#include <set>
 
 class CGame;
 
@@ -21,6 +22,8 @@ public:
 	void UpdateChatMode();
 	void DisconnectFromServer();
 
+	void TryToConnect(const std::string& aUserName);
+
 private:
 	unsigned short myID;
 	bool myIsConnectedToServer;
@@ -32,6 +35,7 @@ private:
 
 	std::atomic<bool> myShouldRun;
 	std::string myInput;
+	std::string myUserName;
 	
 	CGame* myGame;
 
@@ -39,6 +43,8 @@ private:
 
 	sf::Clock myClock;
 	float myPlayerUpdateTimer;
+
+	std::set<unsigned int> myRecievedGuaranteedMessages;
 
 	void SendPlayerData();
 };
