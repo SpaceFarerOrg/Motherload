@@ -57,12 +57,43 @@ void CGame::Update()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		{
-			CNetMessageDestroyBlock::SDestroyBlockData data;
-			data.myTargetID = 1;
-			data.myBlockID = rand() % (myWorldHeight * myWorldWidth);
-			data.mySenderID = 0;
+			unsigned short index = (unsigned short)(myPlayer.GetPosition().x+32) / 64 + myWorldWidth * (unsigned short)((myPlayer.GetPosition().y + 32) / 64);
 
-			myMessageManager->CreateGuaranteedMessage<CNetMessageDestroyBlock>(data);
+			bool shouldDestroy = true;
+			short direction = myPlayer.GetFacingBlock();
+			switch (direction)
+			{
+			case 0:
+				direction = 1;
+				break;
+			case 1:
+				direction = myWorldWidth;
+				break;
+			case 2:
+				direction = -1;
+				break;
+			case 3:
+				direction = -myWorldWidth;
+				break;
+			case -1:
+				shouldDestroy = false;
+				break;
+			}
+
+			direction += index;
+
+			if (direction < 0 || direction >= myTiles.size())
+				shouldDestroy = false;
+
+			if (shouldDestroy)
+			{
+				CNetMessageDestroyBlock::SDestroyBlockData data;
+				data.myTargetID = 1;
+				data.myBlockID = direction;
+				data.mySenderID = 0;
+
+				myMessageManager->CreateGuaranteedMessage<CNetMessageDestroyBlock>(data);
+			}
 		}
 
 		for (auto& object : myGameObjects)
@@ -281,6 +312,13 @@ void CGame::HandlePlayerCollision(float aDT)
 	}
 
 	myPlayer.UpdateY(aDT);
+
+	if (CheckCollisionWithNeighbour(index + 1 + myWorldWidth) ||
+		CheckCollisionWithNeighbour(index + myWorldWidth) ||
+		CheckCollisionWithNeighbour(index - 1 + myWorldWidth))
+	{
+		myPlayer.SetIsGrounded(true);
+	}
 
 	if (CheckCollisionWithNeighbour(index) ||
 		CheckCollisionWithNeighbour(index + 1) ||

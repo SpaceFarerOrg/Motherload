@@ -76,6 +76,9 @@ void CServerWorld::SendWorldData(unsigned char aTargetID)
 
 bool CServerWorld::RemoveBlock(unsigned short aBlockID)
 {
+	if (aBlockID < 0 || aBlockID >= myWorldData.size())
+		return false;
+
 	STile& block = myWorldData[aBlockID];
 
 	if (block.myIsDestroyed == false && block.myType != ETileType::Sky)

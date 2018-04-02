@@ -23,6 +23,9 @@ public:
 	sf::Vector2f GetPosition();
 	void SetPosition(const sf::Vector2f& aPosition);
 
+	void SetIsGrounded(bool aIsGrounded);
+	short GetFacingBlock();
+
 	bool Intersects(const sf::FloatRect& aRect);
 
 	void RevertXMovement();
@@ -37,5 +40,6 @@ private:
 
 	sf::Vector2f myLatestMovement;
 	float myYVelocity;
+	bool myIsGrounded;
 };
 

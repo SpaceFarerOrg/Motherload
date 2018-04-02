@@ -20,6 +20,7 @@ void CPlayer::Init()
 
 	mySpeed = 250.f;
 	myYVelocity = 0.f;
+	myIsGrounded = true;
 }
 
 void CPlayer::Update(float aDT)
@@ -52,13 +53,10 @@ void CPlayer::UpdateY(float aDT)
 {
 	sf::Vector2f direction;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && myYVelocity == 0.f)
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && myIsGrounded)
 	{
 		myYVelocity = -3.f;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		direction.y += 1.f;
+		myIsGrounded = false;
 	}
 
 	myYVelocity += 9.81f * aDT;
@@ -80,6 +78,26 @@ sf::Vector2f CPlayer::GetPosition()
 void CPlayer::SetPosition(const sf::Vector2f & aPosition)
 {
 	mySprite.setPosition(aPosition);
+}
+
+void CPlayer::SetIsGrounded(bool aIsGrounded)
+{
+	myIsGrounded = aIsGrounded;
+	myYVelocity = 0.f;
+}
+
+short CPlayer::GetFacingBlock()
+{
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+		return 0;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Down))
+		return 1;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+		return 2;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up))
+		return 3;
+
+	return -1;
 }
 
 bool CPlayer::Intersects(const sf::FloatRect & aRect)
@@ -104,5 +122,4 @@ void CPlayer::RevertXMovement()
 void CPlayer::RevertYMovement()
 {
 	mySprite.move(0, -myLatestMovement.y);
-	myYVelocity = 0.f;
 }
