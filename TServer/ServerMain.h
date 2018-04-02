@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "ServerGameObject.h"
 #include <set>
+#include "ServerWorld.h"
 
 #define POSITION_FREQ 1.f/30.f
 
@@ -52,5 +53,7 @@ private:
 	CNetMessageManager myMessageManager;
 	time_t myLatestPingTime;
 	std::set<unsigned int> myRecievedGuaranteedMessages;
+
+	CServerWorld myWorld;
 };
 

@@ -7,7 +7,9 @@ void CNetMessage::PackMessage()
 {
 	DoSerialize();
 
-	if (sizeof(myBuffer) > 512)
+	int size = sizeof(char) * myBuffer.size();
+
+	if (size > 512)
 	{
 		PRINT("Serialized stream too large!");
 		myBuffer = std::move(std::vector<char>());

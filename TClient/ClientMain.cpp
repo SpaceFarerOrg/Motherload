@@ -83,6 +83,8 @@ bool CClientMain::StartClient()
 	myShouldRun.store(true);
 	myInput = "";
 
+	myGame->SetMessageManager(myMessageManager);
+
 	return true;
 }
 
@@ -228,6 +230,24 @@ bool CClientMain::RunClient()
 			{
 				unsigned int msgID = base.GetData().myMessageID;
 				myMessageManager.VerifyGuaranteedMessage(msgID);
+			}
+			break;
+			case EMessageType::WorldData:
+			{
+				CNetMessageWorldData rec;
+				rec.RecieveData(buff, sizeof(CNetMessageWorldData::SWorldData));
+				rec.UnpackMessage();
+
+				myGame->LoadWorld(rec.GetWorldWidth(), rec.GetWorldHeight(), rec.GetSkyCutOff(), rec.GetOres());
+			}
+			break;
+			case EMessageType::DestroyBlock:
+			{
+				CNetMessageDestroyBlock rec;
+				rec.RecieveData(buff, sizeof(CNetMessageDestroyBlock::SDestroyBlockData));
+				rec.UnpackMessage();
+
+				myGame->DestroyBlock(rec.GetBlockID());
 			}
 			break;
 			}

@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="NetMessageAcceptGuaranteedMessage.h" />
+    <ClInclude Include="NetMessageDestroyBlock.h" />
     <ClInclude Include="NetMessageRemoveObject.h" />
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="NetMessagePing.h" />
     <ClInclude Include="NetMessagePosition.h" />
     <ClInclude Include="NetMessages.h" />
+    <ClInclude Include="NetMessageWorldData.h" />
     <ClInclude Include="SerializeHelper.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -103,6 +105,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NetMessageAcceptGuaranteedMessage.cpp" />
+    <ClCompile Include="NetMessageDestroyBlock.cpp" />
     <ClCompile Include="NetMessageRemoveObject.cpp" />
     <ClCompile Include="NetDisconnectMessage.cpp" />
     <ClCompile Include="NetMessage.cpp" />
@@ -113,6 +116,7 @@
     <ClCompile Include="NetMessageNewObject.cpp" />
     <ClCompile Include="NetMessagePing.cpp" />
     <ClCompile Include="NetMessagePosition.cpp" />
+    <ClCompile Include="NetMessageWorldData.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

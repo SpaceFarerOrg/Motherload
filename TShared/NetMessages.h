@@ -8,5 +8,6 @@
 #include "NetMessageNewObject.h"
 #include "NetMessageRemoveObject.h"
 #include "NetMessagePing.h"
-
+#include "NetMessageWorldData.h"
+#include "NetMessageDestroyBlock.h"
 

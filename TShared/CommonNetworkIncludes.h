@@ -8,12 +8,17 @@
 
 #define TO_ALL 0
 
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <stdio.h>
 #include <string>
 #include <iostream>
 #include <atomic>
+#include <algorithm>
+#include <array>
 
 #define MAX_BUFFER_SIZE 512
 #define SOCKET_BUFFER_SIZE 65000
@@ -32,6 +37,8 @@ enum class EMessageType : short
 	NewObject,
 	RemoveObject,
 	AcceptGuaranteed,
+	WorldData,
+	DestroyBlock,
 	Size
 };
 
@@ -76,4 +83,20 @@ struct SClient
 	float myY;
 
 	bool myIsConnected = true;
+};
+
+#define MAX_ORE_COUNT 2
+
+enum class ETileType
+{
+	Sky,
+	Ground,
+	Ore,
+	Count
+};
+
+struct STile
+{
+	ETileType myType;
+	bool myIsDestroyed;
 };

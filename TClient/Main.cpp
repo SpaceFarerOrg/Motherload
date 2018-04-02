@@ -17,10 +17,10 @@ int main()
 	CClientMain client;
 	CGame game;
 
-	bool shouldRun = client.StartClient();
 	game.Init();
-
 	client.BindGame(game);
+
+	bool shouldRun = client.StartClient();
 
 	while (shouldRun && game.GetShouldRun())
 	{

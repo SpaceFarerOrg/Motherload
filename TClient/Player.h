@@ -16,9 +16,17 @@ public:
 
 	void Init();
 	void Update(float aDT);
+	void UpdateX(float aDT);
+	void UpdateY(float aDT);
 	void Render(sf::RenderWindow* aRenderWindow);
 
 	sf::Vector2f GetPosition();
+	void SetPosition(const sf::Vector2f& aPosition);
+
+	bool Intersects(const sf::FloatRect& aRect);
+
+	void RevertXMovement();
+	void RevertYMovement();
 
 private:
 	
@@ -26,5 +34,8 @@ private:
 
 	sf::Texture myTexture;
 	sf::Sprite mySprite;
+
+	sf::Vector2f myLatestMovement;
+	float myYVelocity;
 };
 

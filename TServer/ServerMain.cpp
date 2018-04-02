@@ -14,6 +14,8 @@ CServerMain::CServerMain()
 	myCurrentTimePoint = std::chrono::high_resolution_clock::now();
 	myTotalTime = 0.f;
 	mySpawnTimer = 0.f;
+
+	srand(static_cast<unsigned int>(time(0)));
 }
 
 
@@ -62,6 +64,9 @@ bool CServerMain::StartServer()
 	myLatestPingTime = time(0);
 
 	myAvailableID = 1;
+
+	myWorld.SetMessageManager(myMessageManager);
+	myWorld.Build(25, 14);
 
 	return true;
 }
@@ -187,6 +192,26 @@ bool CServerMain::RunServer()
 				myMessageManager.VerifyGuaranteedMessage(msgID);
 			}
 			break;
+			case EMessageType::DestroyBlock:
+			{
+				CNetMessageDestroyBlock rec;
+				rec.RecieveData(buff, sizeof(CNetMessageDestroyBlock::SDestroyBlockData));
+				rec.UnpackMessage();
+
+				if (myWorld.RemoveBlock(rec.GetBlockID()))
+				{
+					CNetMessageDestroyBlock::SDestroyBlockData destroyData;
+					destroyData.myBlockID = rec.GetBlockID();
+					destroyData.mySenderID = 0;
+					
+					for (SClient& client : myClients)
+					{
+						destroyData.myTargetID = client.myID;
+						myMessageManager.CreateGuaranteedMessage<CNetMessageDestroyBlock>(destroyData);
+					}
+				}
+			}
+			break;
 			}
 		}
 	}
@@ -238,6 +263,8 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 		data.myClientConnectName = "OK";
 		data.mySenderID = 0;
 		myMessageManager.CreateGuaranteedMessage<CNetMessageConnect>(data);
+
+		myWorld.SendWorldData(data.myTargetID);
 
 		for (size_t i = 0; i < myClients.size(); ++i)
 		{
