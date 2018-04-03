@@ -118,8 +118,13 @@ bool CServerMain::RunServer()
 	char buff[MAX_BUFFER_SIZE];
 	ZeroMemory(buff, MAX_BUFFER_SIZE);
 	Sleep(1);
-	while (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, (sockaddr*)&from, &fromlen) != SOCKET_ERROR)
+
+	unsigned short recievedThisFrame = 0;
+
+	while (recievedThisFrame < MAX_RECIEVED_PER_FRAME && recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, (sockaddr*)&from, &fromlen) != SOCKET_ERROR)
 	{
+		recievedThisFrame++;
+
 		size_t buffIndex = 0;
 		EMessageType id = static_cast<EMessageType>(buff[buffIndex]);
 		bool shouldSkip = false;

@@ -22,6 +22,7 @@
 
 #define MAX_BUFFER_SIZE 512
 #define SOCKET_BUFFER_SIZE 65000
+#define MAX_RECIEVED_PER_FRAME 128
 
 #pragma comment(lib, "Ws2_32.lib")
 

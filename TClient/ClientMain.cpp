@@ -36,13 +36,6 @@ bool CClientMain::StartClient()
 		return false;
 	}
 
-	WCHAR username[UNLEN+1];
-	DWORD username_len = UNLEN + 1;
-	GetUserName(username, &username_len);
-
-	std::wstring wun = username;
-	myUserName = std::string(wun.begin(), wun.end());
-
 	PRINT("Client startup successful!");
 
 	myLocalAddress.sin_family = AF_INET;
@@ -67,7 +60,16 @@ bool CClientMain::StartClient()
 
 	std::string serverIP;
 	std::ifstream f("networkSettings.txt");
-	f >> serverIP;
+	std::getline(f, serverIP);
+	std::getline(f, myUserName);
+
+	//WCHAR username[UNLEN + 1];
+	//DWORD username_len = UNLEN + 1;
+	//GetUserName(username, &username_len);
+	//
+	//std::wstring wun = username;
+	//myUserName = std::string(wun.begin(), wun.end());
+
 	f.close();
 
 	//serverIP = Utilities::GetInput("Type an IP to connect with: ", "127.0.0.1");

@@ -72,6 +72,19 @@ void CServerWorld::SendWorldData(unsigned char aTargetID)
 	int worldSize = sizeof(myWorldData);
 
 	myMessageManager->CreateGuaranteedMessage<CNetMessageWorldData>(data);
+
+	for (int i = 0; i < myWorldData.size(); ++i)
+	{
+		if (myWorldData[i].myIsDestroyed)
+		{
+			CNetMessageDestroyBlock::SDestroyBlockData destroyData;
+			destroyData.myBlockID = i;
+			destroyData.myTargetID = aTargetID;
+			destroyData.mySenderID = 0;
+			
+			myMessageManager->CreateGuaranteedMessage<CNetMessageDestroyBlock>(destroyData);
+		}
+	}
 }
 
 bool CServerWorld::RemoveBlock(unsigned short aBlockID)

@@ -63,6 +63,7 @@ private:
 	CPlayer myPlayer;
 	std::unordered_map<int, sf::Sprite> myOtherPlayers;
 	std::unordered_map<short, CGameObject> myGameObjects;
+	std::vector<unsigned short> myDestroyBlockQueue;
 
 	std::vector<STile> myTiles;
 	unsigned char myWorldWidth;

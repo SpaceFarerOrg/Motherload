@@ -103,6 +103,12 @@ void CGame::Update()
 
 		CDebugDrawer::GetInstance().Update(dt);
 
+		for (short id : myDestroyBlockQueue)
+		{
+			if (myTiles.size() > id)
+				myTiles[id].myIsDestroyed = true;
+		}
+
 		Render();
 	}
 }
@@ -244,7 +250,14 @@ void CGame::RemoveObject(short aID)
 
 void CGame::DestroyBlock(unsigned short aBlockID)
 {
-	myTiles[aBlockID].myIsDestroyed = true;
+	if (myTiles.size() < aBlockID)
+	{
+		myDestroyBlockQueue.push_back(aBlockID);
+	}
+	else
+	{
+		myTiles[aBlockID].myIsDestroyed = true;
+	}
 }
 
 void CGame::SetIsConnected(bool aIsConnected)
