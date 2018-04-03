@@ -29,6 +29,8 @@ void CPlayer::Update(float aDT)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
 	{
 		mySprite.setPosition(768, 0);
+		myYVelocity = 0.f;
+		myIsGrounded = false;
 	}
 }
 
@@ -60,8 +62,7 @@ void CPlayer::UpdateY(float aDT)
 	}
 
 	myYVelocity += 9.81f * aDT;
-	myLatestMovement.y = direction.y * mySpeed * aDT;
-	myLatestMovement.y += myYVelocity;
+	myLatestMovement.y = myYVelocity + direction.y * mySpeed * aDT;
 	mySprite.move(0, myLatestMovement.y);
 }
 

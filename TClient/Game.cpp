@@ -345,6 +345,14 @@ void CGame::HandlePlayerCollision(float aDT)
 	{
 		myPlayer.RevertYMovement();
 	}
+
+	if (myPlayer.GetPosition().x < 0.f || myPlayer.GetPosition().x > 1600.f - 64.f)
+		myPlayer.RevertXMovement();
+	if (myPlayer.GetPosition().y > 900.f - 64.f)
+	{
+		myPlayer.RevertYMovement();
+		myPlayer.SetIsGrounded(true);
+	}
 }
 
 bool CGame::CheckCollisionWithNeighbour(unsigned short aIndex)
