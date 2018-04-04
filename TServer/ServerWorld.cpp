@@ -48,6 +48,10 @@ void CServerWorld::Build(unsigned char aWidth, unsigned char aHeight)
 		{
 			currentTile.myType = ETileType::Sky;
 		}
+		else if (y == mySkyCutOff && x > 4 && x < myWorldWidth - 5)
+		{
+			currentTile.myType = ETileType::Rock;
+		}
 		else if (y > mySkyCutOff)
 		{
 			if (rand() % 100 < chanceOfOre && oreCount < MAX_ORE_COUNT)
@@ -96,7 +100,7 @@ bool CServerWorld::RemoveBlock(unsigned short aBlockID)
 
 	STile& block = myWorldData[aBlockID];
 
-	if (block.myIsDestroyed == false && block.myType != ETileType::Sky)
+	if (block.myIsDestroyed == false && block.myType != ETileType::Sky && block.myType != ETileType::Rock)
 	{
 		block.myIsDestroyed = true;
 		return true;

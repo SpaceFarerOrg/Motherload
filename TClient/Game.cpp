@@ -44,6 +44,7 @@ void CGame::Init()
 	mySkyTexture.loadFromFile("Sprites/sky.png");
 	myOreTexture.loadFromFile("Sprites/ore.png");
 	myDugGroundTexture.loadFromFile("Sprites/background.png");
+	myRockTexture.loadFromFile("Sprites/rock.png");
 
 	//myWindow.setFramerateLimit(60);
 }
@@ -152,6 +153,9 @@ void CGame::Render()
 			case ETileType::Sky:
 				texture = &mySkyTexture;
 				break;
+			case ETileType::Rock:
+				texture = &myRockTexture;
+				break;
 			}
 		}
 		else
@@ -214,6 +218,10 @@ void CGame::LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char
 		if (y < aSkyCutOff)
 		{
 			currentTile.myType = ETileType::Sky;
+		}
+		else if (y == aSkyCutOff && x > 4 && x < myWorldWidth - 5)
+		{
+			currentTile.myType = ETileType::Rock;
 		}
 	}
 

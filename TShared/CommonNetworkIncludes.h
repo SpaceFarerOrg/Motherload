@@ -108,6 +108,7 @@ enum class ETileType
 	Sky,
 	Ground,
 	Ore,
+	Rock,
 	Count
 };
 
