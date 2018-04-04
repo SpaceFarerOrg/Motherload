@@ -235,10 +235,12 @@ bool CServerMain::RunServer()
 			case EMessageType::Fuel:
 			{
 				CNetMessageFuel rec;
-
 				rec.RecieveData(buff, sizeof(CNetMessageFuel::SFuelMessageData));
+				rec.UnpackMessage();
 
-				myClients[rec.GetData().mySenderID - 1].myFuel += rec.GetFuelAmount();
+				SClient& client = myClients[rec.GetData().mySenderID - 1];
+
+				client.myFuel += client.myFuel < 1.f ? rec.GetFuelAmount() : 0.f;
 			}
 			break;
 			}
