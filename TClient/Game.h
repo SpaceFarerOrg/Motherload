@@ -78,5 +78,8 @@ private:
 	sf::Texture myRockTexture;
 	sf::Sprite myTileSprite;
 
+	sf::Texture myGasTankTexture;
+	sf::Sprite myGasTankSprite;
+
 	CNetMessageManager* myMessageManager;
 };
