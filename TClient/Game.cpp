@@ -402,6 +402,11 @@ void CGame::HandlePlayerCollision(float aDT)
 		myPlayer.SetPosition({ myPlayer.GetPosition().x, (myWorldHeight - 1) * 64.f });
 		myPlayer.SetIsGrounded(true);
 	}
+
+	if (myPlayer.Intersects(myGasTankSprite.getGlobalBounds()))
+	{
+		myPlayer.GiveFuel(aDT / 2.f);
+	}
 }
 
 bool CGame::CheckCollisionWithNeighbour(unsigned short aIndex)
