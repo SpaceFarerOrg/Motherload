@@ -98,6 +98,7 @@
     <ClInclude Include="NetMessagePing.h" />
     <ClInclude Include="NetMessagePosition.h" />
     <ClInclude Include="NetMessages.h" />
+    <ClInclude Include="NetMessageSimpleType.h" />
     <ClInclude Include="NetMessageWorldData.h" />
     <ClInclude Include="SerializeHelper.h" />
     <ClInclude Include="stdafx.h" />
@@ -118,6 +119,7 @@
     <ClCompile Include="NetMessageNewObject.cpp" />
     <ClCompile Include="NetMessagePing.cpp" />
     <ClCompile Include="NetMessagePosition.cpp" />
+    <ClCompile Include="NetMessageSimpleType.cpp" />
     <ClCompile Include="NetMessageWorldData.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -115,7 +115,6 @@ void CGame::Update()
 				data.myTargetID = 1;
 				data.myBlockID = direction;
 				
-
 				myMessageManager->CreateGuaranteedMessage<CNetMessageDestroyBlock>(data);
 			}
 		}
@@ -143,6 +142,7 @@ void CGame::Render()
 
 	for (int i = 0; i < myTiles.size(); ++i)
 	{
+		float rotation = 0.f;
 		unsigned char x = i % myWorldWidth;
 		unsigned char y = i / myWorldWidth;
 
@@ -157,6 +157,7 @@ void CGame::Render()
 				break;
 			case ETileType::Ore:
 				texture = &myOreTexture;
+				rotation = 90 * (i % 5);
 				break;
 			case ETileType::Sky:
 				texture = &mySkyTexture;
@@ -175,6 +176,14 @@ void CGame::Render()
 		{
 			myTileSprite.setTexture(*texture);
 			myTileSprite.setPosition(x * 64, y * 64);
+			myTileSprite.setRotation(rotation);
+
+			if (myTileSprite.getRotation() == 270)
+				myTileSprite.move(0, 64);
+			else if (myTileSprite.getRotation() == 180)
+				myTileSprite.move(64, 64);
+			else if (myTileSprite.getRotation() == 90)
+				myTileSprite.move(64, 0);
 
 			myWindow.draw(myTileSprite);
 		}
@@ -203,7 +212,9 @@ void CGame::Render()
 
 	myWindow.draw(myConnectedStatus);
 
-	myWindow.draw(myKbPerSecond);
+	//myWindow.draw(myKbPerSecond);
+
+	myPlayer.RenderUI(myWindow);
 
 	CDebugDrawer::GetInstance().Render(&myWindow);
 
@@ -428,6 +439,11 @@ void CGame::HandlePlayerCollision(float aDT)
 		fuelData.myFuelAmount = aDT / 2.f;
 
 		myMessageManager->CreateMessage<CNetMessageFuel>(fuelData);
+	}
+
+	if (myPlayer.Intersects(myShopSprite.getGlobalBounds()))
+	{
+		myPlayer.EmptyOres();
 	}
 }
 

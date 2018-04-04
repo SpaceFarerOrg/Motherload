@@ -3,6 +3,7 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
+#include "SFML/Graphics/Text.hpp"
 
 namespace sf
 {
@@ -39,7 +40,6 @@ public:
 	bool GetCanHoldMoreOres() const;
 	void GiveOre();
 
-
 	void RevertXMovement();
 	void RevertYMovement();
 
@@ -47,6 +47,8 @@ public:
 
 	bool CanDig();
 	void Dig();
+
+	void RenderUI(sf::RenderWindow& aRenderWindow);
 
 private:
 	
@@ -70,5 +72,8 @@ private:
 	bool myCanDig;
 	float myDigTimer;
 	float myDigCooldown;
+
+	sf::Text myUIText;
+	sf::Font myUIFont;
 };
 

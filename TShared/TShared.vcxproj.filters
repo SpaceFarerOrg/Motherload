@@ -56,9 +56,7 @@
     <ClInclude Include="NetMessageFuel.h">
       <Filter>MessageTypes</Filter>
     </ClInclude>
-    <ClInclude Include="NetMessageSimpleType.h">
-      <Filter>MessageTypes</Filter>
-    </ClInclude>
+    <ClInclude Include="NetMessageSimpleType.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

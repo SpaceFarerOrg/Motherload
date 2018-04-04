@@ -111,8 +111,12 @@ bool CClientMain::RunClient()
 
 	sockaddr_in from;
 
-	while (recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, nullptr, 0) != SOCKET_ERROR)
+	unsigned short recievedThisFrame = 0;
+
+	while (recievedThisFrame < MAX_RECIEVED_PER_FRAME && recvfrom(mySocket, buff, MAX_BUFFER_SIZE, 0, nullptr, 0) != SOCKET_ERROR)
 	{
+		recievedThisFrame++;
+
 		myLatestRecievedMessageTime = currentTime;
 
 		size_t buffIndex = 0;
@@ -271,6 +275,8 @@ bool CClientMain::RunClient()
 			}
 		}
 	}
+
+	int error = WSAGetLastError();
 
 	if (myIsConnectedToServer)
 	{

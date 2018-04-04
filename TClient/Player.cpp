@@ -30,6 +30,10 @@ void CPlayer::Init()
 	myCanDig = true;
 	myDigTimer = 0.f;
 	myDigCooldown = 0.3f;
+
+	myUIFont.loadFromFile("Fonts/Roboto-Medium.ttf");
+	myUIText.setFont(myUIFont);
+	myUIText.setCharacterSize(30);
 }
 
 void CPlayer::Update(float aDT)
@@ -47,6 +51,11 @@ void CPlayer::Update(float aDT)
 	{
 		myDigTimer -= myDigCooldown;
 		myCanDig = true;
+	}
+
+	if (myFuelAmount <= 0.f)
+	{
+		myCanDig = false;
 	}
 }
 
@@ -197,6 +206,7 @@ void CPlayer::AddScore(size_t aAddedScore)
 
 void CPlayer::EmptyOres()
 {
+	myScore += myHeldOres * 5;
 	myHeldOres = 0;
 }
 
@@ -241,4 +251,19 @@ void CPlayer::Dig()
 {
 	myCanDig = false;
 	myDigTimer = 0.f;
+}
+
+void CPlayer::RenderUI(sf::RenderWindow & aRenderWindow)
+{
+	myUIText.setString("Gold:" + std::to_string(myScore));
+	myUIText.setPosition(5, 80);
+	myUIText.setColor(sf::Color::Yellow);
+
+	aRenderWindow.draw(myUIText);
+
+	myUIText.setString("Ores:" + std::to_string(myHeldOres));
+	myUIText.move(0, 35);
+	myUIText.setColor(sf::Color::Magenta);
+
+	aRenderWindow.draw(myUIText);
 }

@@ -209,7 +209,7 @@ bool CServerMain::RunServer()
 					destroyData.myBlockID = rec.GetBlockID();
 					destroyData.mySenderID = 0;
 
-					myClients[rec.GetData().mySenderID - 1].myFuel -= 0.05f;
+					myClients[rec.GetData().mySenderID - 1].myFuel -= 0.03f;
 					
 					if (myWorld.GetBlockTypeFromID(rec.GetBlockID()) == ETileType::Ore)
 					{
@@ -319,7 +319,7 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 			CNetMessageNewClient::SNetMessageNewClientData newClientData;
 			newClientData.myConnectedClient = myClients[i].myID;
 			newClientData.myTargetID = data.myTargetID;
-			myMessageManager.CreateMessage<CNetMessageNewClient>(newClientData);
+			myMessageManager.CreateGuaranteedMessage<CNetMessageNewClient>(newClientData);
 		}
 
 		for (size_t i = 0; i < myClients.size()-1; ++i)
@@ -347,15 +347,17 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 
 void CServerMain::DisconnectClient(short aClientID)
 {
-	PRINT(myClients[aClientID - 1].myName + " disconnected");
-	myClients[aClientID - 1].myIsConnected = false;
+	if (aClientID != 0)
+	{
+		PRINT(myClients[aClientID - 1].myName + " disconnected");
+		myClients[aClientID - 1].myIsConnected = false;
 
-	CNetMessage::SNetMessageData msg;
-	msg.mySenderID = myClients[aClientID - 1].myID;
-	msg.myTargetID = TO_ALL - myClients[aClientID - 1].myID;
+		CNetMessage::SNetMessageData msg;
+		msg.mySenderID = myClients[aClientID - 1].myID;
+		msg.myTargetID = TO_ALL - myClients[aClientID - 1].myID;
 
-	myMessageManager.CreateMessage<CNetDisconnectMessage>(msg);
-
+		myMessageManager.CreateMessage<CNetDisconnectMessage>(msg);
+	}
 }
 
 //void CServerMain::RecieveChatMessage(SProtocol aProtocol)
@@ -373,7 +375,7 @@ bool CServerMain::VerifyClient(const SClient & aClient)
 			client.myIsConnected = true;
 
 			SNetMessageConnectData data;
-			data.myTargetID = myClients.size();
+			data.myTargetID = client.myID;
 			data.myClientConnectName = "OK";
 			data.mySenderID = 0;
 			myMessageManager.CreateMessage<CNetMessageConnect>(data);
