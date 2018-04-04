@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "Game.h"
+#include "Math.h"
 #include "DebugDrawer.h"
 #include "NetMessageDestroyBlock.h"
 #include "NetMessageManager.h"
 #include "sfml/Window/Keyboard.hpp"
+#include "sfml/Graphics/View.hpp"
 
 void CGame::SetMessageManager(CNetMessageManager& aMessageManager)
 {
@@ -41,21 +43,32 @@ void CGame::Init()
 	myGroundTexture.loadFromFile("Sprites/ground.png");
 	mySkyTexture.loadFromFile("Sprites/sky.png");
 	myOreTexture.loadFromFile("Sprites/ore.png");
+	myDugGroundTexture.loadFromFile("Sprites/background.png");
+
+	//myWindow.setFramerateLimit(60);
 }
 
 void CGame::Update()
 {
 	HandleWindowEvents();
 
+	float dt = myClock.getElapsedTime().asSeconds();
+	myClock.restart();
+
+	sf::View view;
+	view = myWindow.getDefaultView();
+	sf::Vector2f newCenter = Math::Lerp(myWindow.getView().getCenter(), { 800.f, myPlayer.GetPosition().y }, dt / 0.5f);
+	newCenter.y = Math::Clamp(newCenter.y, 450.f, myWorldHeight * 64.f - 450.f);
+	view.setCenter(newCenter);
+	myWindow.setView(view);
+
+
 	if (myWorldIsLoaded)
 	{
-		float dt = myClock.getElapsedTime().asSeconds();
-		myClock.restart();
-
 		HandlePlayerCollision(dt);
 		myPlayer.Update(dt);
 
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+		if (myPlayer.CanDig() && sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
 		{
 			unsigned short index = (unsigned short)(myPlayer.GetPosition().x+32) / 64 + myWorldWidth * (unsigned short)((myPlayer.GetPosition().y + 32) / 64);
 
@@ -87,6 +100,8 @@ void CGame::Update()
 
 			if (shouldDestroy)
 			{
+				myPlayer.Dig();
+
 				CNetMessageDestroyBlock::SDestroyBlockData data;
 				data.myTargetID = 1;
 				data.myBlockID = direction;
@@ -119,13 +134,13 @@ void CGame::Render()
 
 	for (int i = 0; i < myTiles.size(); ++i)
 	{
+		unsigned char x = i % myWorldWidth;
+		unsigned char y = i / myWorldWidth;
+
+		sf::Texture* texture = nullptr;
+
 		if (myTiles[i].myIsDestroyed == false)
 		{
-			unsigned char x = i % myWorldWidth;
-			unsigned char y = i / myWorldWidth;
-
-			sf::Texture* texture = nullptr;
-
 			switch (myTiles[i].myType)
 			{
 			case ETileType::Ground:
@@ -138,14 +153,18 @@ void CGame::Render()
 				texture = &mySkyTexture;
 				break;
 			}
+		}
+		else
+		{
+			texture = &myDugGroundTexture;
+		}
 
-			if (texture != nullptr)
-			{
-				myTileSprite.setTexture(*texture);
-				myTileSprite.setPosition(x * 64, y * 64);
+		if (texture != nullptr)
+		{
+			myTileSprite.setTexture(*texture);
+			myTileSprite.setPosition(x * 64, y * 64);
 
-				myWindow.draw(myTileSprite);
-			}
+			myWindow.draw(myTileSprite);
 		}
 	}
 
@@ -200,6 +219,9 @@ void CGame::LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char
 
 	for (int i = 0; i < aOres.size(); ++i)
 	{
+		if (aOres[i] == 0)
+			break;
+
 		myTiles[aOres[i]].myType = ETileType::Ore;
 	}
 }
@@ -213,7 +235,6 @@ void CGame::AddPlayer(size_t aID)
 {
 	sf::Sprite newSprite;
 	newSprite.setTexture(myPlayerTexture);
-	newSprite.setOrigin(myPlayerTexture.getSize().x / 2, myPlayerTexture.getSize().y / 2);
 
 	myOtherPlayers.insert(std::make_pair(aID, newSprite));
 }
@@ -333,6 +354,13 @@ void CGame::HandlePlayerCollision(float aDT)
 		myPlayer.SetIsGrounded(true);
 	}
 
+	if (CheckCollisionWithNeighbour(index - 1 - myWorldWidth) ||
+		CheckCollisionWithNeighbour(index - myWorldWidth) ||
+		CheckCollisionWithNeighbour(index + 1 - myWorldWidth))
+	{
+		myPlayer.ResetVelocity();
+	}
+
 	if (CheckCollisionWithNeighbour(index) ||
 		CheckCollisionWithNeighbour(index + 1) ||
 		CheckCollisionWithNeighbour(index + 1 + myWorldWidth) ||
@@ -348,9 +376,9 @@ void CGame::HandlePlayerCollision(float aDT)
 
 	if (myPlayer.GetPosition().x < 0.f || myPlayer.GetPosition().x > 1600.f - 64.f)
 		myPlayer.RevertXMovement();
-	if (myPlayer.GetPosition().y > 900.f - 64.f)
+	if (myPlayer.GetPosition().y > (myWorldHeight-1) * 64.f)
 	{
-		myPlayer.RevertYMovement();
+		myPlayer.SetPosition({ myPlayer.GetPosition().x, (myWorldHeight - 1) * 64.f });
 		myPlayer.SetIsGrounded(true);
 	}
 }

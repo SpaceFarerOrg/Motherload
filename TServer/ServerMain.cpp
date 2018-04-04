@@ -66,7 +66,7 @@ bool CServerMain::StartServer()
 	myAvailableID = 1;
 
 	myWorld.SetMessageManager(myMessageManager);
-	myWorld.Build(25, 14);
+	myWorld.Build(25, 60);
 
 	return true;
 }
@@ -80,32 +80,32 @@ bool CServerMain::RunServer()
 
 	if (myTimeSincePositionSend >= POSITION_FREQ)
 	{
-		//for (SClient& c : myClients)
-		//{
-		//	if (c.myIsConnected)
-		//	{
-		//		CNetMessagePosition::SPositionMessageData data;
-		//	
-		//		data.myTargetID = TO_ALL - c.myID;
-		//		data.mySenderID = c.myID;
-		//		//Test comments
-		//		data.myX = c.myX;
-		//		data.myY = c.myY;
-		//	
-		//		myMessageManager.CreateMessage<CNetMessagePosition>(data);
-		//	}
-		//}
-
-		for (auto& object : myGameObjects)
+		for (SClient& c : myClients)
 		{
-			CNetMessagePosition::SPositionMessageData data;
-			data.myTargetID = TO_ALL;
-			data.mySenderID = object.first;
-			data.myX = object.second.GetPosition().x;
-			data.myY = object.second.GetPosition().y;
-		
-			myMessageManager.CreateMessage<CNetMessagePosition>(data);
+			if (c.myIsConnected)
+			{
+				CNetMessagePosition::SPositionMessageData data;
+			
+				data.myTargetID = TO_ALL - c.myID;
+				data.mySenderID = c.myID;
+				//Test comments
+				data.myX = c.myX;
+				data.myY = c.myY;
+			
+				myMessageManager.CreateMessage<CNetMessagePosition>(data);
+			}
 		}
+
+		//for (auto& object : myGameObjects)
+		//{
+		//	CNetMessagePosition::SPositionMessageData data;
+		//	data.myTargetID = TO_ALL;
+		//	data.mySenderID = object.first;
+		//	data.myX = object.second.GetPosition().x;
+		//	data.myY = object.second.GetPosition().y;
+		//
+		//	myMessageManager.CreateMessage<CNetMessagePosition>(data);
+		//}
 
 		myTimeSincePositionSend -= POSITION_FREQ;
 	}

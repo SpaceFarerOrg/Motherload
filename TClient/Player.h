@@ -31,6 +31,11 @@ public:
 	void RevertXMovement();
 	void RevertYMovement();
 
+	void ResetVelocity();
+
+	bool CanDig();
+	void Dig();
+
 private:
 	
 	float mySpeed;
@@ -41,5 +46,10 @@ private:
 	sf::Vector2f myLatestMovement;
 	float myYVelocity;
 	bool myIsGrounded;
+	bool myIsHoldingDownJump;
+
+	bool myCanDig;
+	float myDigTimer;
+	float myDigCooldown;
 };
 

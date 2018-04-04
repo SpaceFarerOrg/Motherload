@@ -29,8 +29,8 @@ void CServerWorld::Build(unsigned char aWidth, unsigned char aHeight)
 	myWorldWidth = aWidth;
 	myWorldHeight = aHeight;
 
-	mySkyCutOff = aHeight / 3;
-	int chanceOfOre = 5;
+	mySkyCutOff = 5;
+	int chanceOfOre = 0;
 	short oreCount = 0;
 
 	for (int i = 0; i < aWidth * aHeight; ++i)
@@ -39,6 +39,8 @@ void CServerWorld::Build(unsigned char aWidth, unsigned char aHeight)
 
 		unsigned char x = i % aWidth;
 		unsigned char y = i / aWidth;
+
+		chanceOfOre = ((float)y / myWorldHeight) * 10;
 
 		STile& currentTile = myWorldData.back();
 

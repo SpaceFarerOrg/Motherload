@@ -21,6 +21,11 @@ void CPlayer::Init()
 	mySpeed = 250.f;
 	myYVelocity = 0.f;
 	myIsGrounded = true;
+	myIsHoldingDownJump = false;
+
+	myCanDig = true;
+	myDigTimer = 0.f;
+	myDigCooldown = 0.3f;
 }
 
 void CPlayer::Update(float aDT)
@@ -31,6 +36,13 @@ void CPlayer::Update(float aDT)
 		mySprite.setPosition(768, 0);
 		myYVelocity = 0.f;
 		myIsGrounded = false;
+	}
+
+	myDigTimer += aDT;
+	if (myDigTimer >= myDigCooldown)
+	{
+		myDigTimer -= myDigCooldown;
+		myCanDig = true;
 	}
 }
 
@@ -55,15 +67,18 @@ void CPlayer::UpdateY(float aDT)
 {
 	sf::Vector2f direction;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && myIsGrounded)
+	if (!myIsHoldingDownJump && sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && myIsGrounded)
 	{
 		myYVelocity = -3.f;
 		myIsGrounded = false;
 	}
 
 	myYVelocity += 9.81f * aDT;
-	myLatestMovement.y = myYVelocity + direction.y * mySpeed * aDT;
+
+	myLatestMovement.y = myYVelocity;
 	mySprite.move(0, myLatestMovement.y);
+
+	myIsHoldingDownJump = sf::Keyboard::isKeyPressed(sf::Keyboard::Up);
 }
 
 void CPlayer::Render(sf::RenderWindow * aRenderWindow)
@@ -123,4 +138,20 @@ void CPlayer::RevertXMovement()
 void CPlayer::RevertYMovement()
 {
 	mySprite.move(0, -myLatestMovement.y);
+}
+
+void CPlayer::ResetVelocity()
+{
+	myYVelocity = 0.f;
+}
+
+bool CPlayer::CanDig()
+{
+	return myCanDig;
+}
+
+void CPlayer::Dig()
+{
+	myCanDig = false;
+	myDigTimer = 0.f;
 }

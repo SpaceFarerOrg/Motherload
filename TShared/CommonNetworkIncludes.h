@@ -86,7 +86,7 @@ struct SClient
 	bool myIsConnected = true;
 };
 
-#define MAX_ORE_COUNT 2
+#define MAX_ORE_COUNT 128
 
 enum class ETileType
 {
