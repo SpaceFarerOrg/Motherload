@@ -148,6 +148,8 @@ bool CClientMain::RunClient()
 					myIsConnectedToServer = true;
 					myID = rec.GetData().myTargetID;
 					myGame->SetIsConnected(true);
+
+					myMessageManager.SetID(myID);
 				}
 			}
 			break;

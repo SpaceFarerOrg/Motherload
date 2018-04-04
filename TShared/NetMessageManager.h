@@ -14,7 +14,7 @@ public:
 	CNetMessageManager() = default;
 	~CNetMessageManager() = default;
 
-	
+	void SetID(size_t aID);
 
 	void Init(size_t aBufferSize, SOCKET aSocketToUse);
 
@@ -40,6 +40,8 @@ private:
 	std::unordered_map<unsigned int, CNetMessage*> myGuaranteedMessages;
 	SOCKET mySocket;
 
+	size_t myID;
+
 	float myTimer;
 	int mySentLastSecond;
 	int mySentThisSecond;
@@ -54,6 +56,7 @@ inline void CNetMessageManager::CreateMessage(SData aData)
 	std::chrono::seconds msSinceStartOfTime = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
 	aData.myTimeStamp = msSinceStartOfTime.count();
 
+	aData.mySenderID = myID;
 	newMessage->Create(aData);
 
 	myMessages.push_back(newMessage);
@@ -74,6 +77,7 @@ inline void CNetMessageManager::CreateGuaranteedMessage(SData aData)
 		aData.myTimeStamp = msSinceStartOfTime.count();
 		aData.myMessageID = ++myAvailableID;
 
+		aData.mySenderID = myID;
 		newMessage->Create(aData);
 
 		myGuaranteedMessages.insert(std::pair<unsigned int, CNetMessage*>(aData.myMessageID, newMessage));

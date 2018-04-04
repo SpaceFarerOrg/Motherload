@@ -6,6 +6,7 @@
 
 CPlayer::CPlayer()
 {
+	myFuelAmount = 1.f;
 }
 
 
@@ -172,8 +173,6 @@ void CPlayer::SetFuelAmount(float aFuelAmount)
 void CPlayer::GiveFuel(float aGive)
 {
 	myFuelAmount += aGive;
-
-	
 }
 
 void CPlayer::RevertXMovement()
