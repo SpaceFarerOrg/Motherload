@@ -77,6 +77,8 @@ void CPlayer::UpdateY(float aDT)
 
 	myYVelocity += 9.81f * aDT;
 
+	myYVelocity = Math::Clamp(myYVelocity, -10.f, 10.f);
+
 	myLatestMovement.y = myYVelocity;
 	mySprite.move(0, myLatestMovement.y);
 

@@ -6,6 +6,7 @@
 #include "NetMessageManager.h"
 #include "sfml/Window/Keyboard.hpp"
 #include "sfml/Graphics/View.hpp"
+#include "NetMessageFuel.h"
 
 void CGame::SetMessageManager(CNetMessageManager& aMessageManager)
 {
@@ -406,6 +407,11 @@ void CGame::HandlePlayerCollision(float aDT)
 	if (myPlayer.Intersects(myGasTankSprite.getGlobalBounds()))
 	{
 		myPlayer.GiveFuel(aDT / 2.f);
+		
+		CNetMessageFuel::SFuelMessageData fuelData;
+		fuelData.myFuelAmount = aDT / 2.f;
+
+		myMessageManager->CreateMessage<CNetMessageFuel>(fuelData);
 	}
 }
 
