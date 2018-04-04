@@ -18,6 +18,8 @@ public:
 
 	bool RemoveBlock(unsigned short aBlockID);
 
+	ETileType GetBlockTypeFromID(size_t aID) const;
+
 private:
 	unsigned char myWorldWidth;
 	unsigned char myWorldHeight;

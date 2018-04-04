@@ -78,6 +78,9 @@ private:
 	sf::Texture myRockTexture;
 	sf::Sprite myTileSprite;
 
+	sf::Texture myShopTexture;
+	sf::Sprite myShopSprite;
+
 	sf::Texture myGasTankTexture;
 	sf::Sprite myGasTankSprite;
 

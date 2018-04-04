@@ -32,6 +32,14 @@ public:
 	void SetFuelAmount(float aFuelAmount);
 	void GiveFuel(float aGive);
 
+	void AddScore(size_t aAddedScore);
+
+	void EmptyOres();
+	size_t GetHeldOres() const;
+	bool GetCanHoldMoreOres() const;
+	void GiveOre();
+
+
 	void RevertXMovement();
 	void RevertYMovement();
 
@@ -43,6 +51,11 @@ public:
 private:
 	
 	float mySpeed;
+
+
+	size_t myScore;
+	size_t myHeldOres;
+	const size_t myMaxHeldOres = 10;
 
 	sf::Texture myTexture;
 	sf::Sprite mySprite;

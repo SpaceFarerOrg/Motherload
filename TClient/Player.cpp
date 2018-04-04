@@ -7,6 +7,8 @@
 CPlayer::CPlayer()
 {
 	myFuelAmount = 1.f;
+	myHeldOres = 0;
+	myScore = 0;
 }
 
 
@@ -184,6 +186,33 @@ void CPlayer::SetFuelAmount(float aFuelAmount)
 void CPlayer::GiveFuel(float aGive)
 {
 	myFuelAmount += aGive;
+}
+
+void CPlayer::AddScore(size_t aAddedScore)
+{
+	myScore += aAddedScore;
+}
+
+void CPlayer::EmptyOres()
+{
+	myHeldOres = 0;
+}
+
+size_t CPlayer::GetHeldOres() const
+{
+	return myHeldOres;
+}
+
+bool CPlayer::GetCanHoldMoreOres() const
+{
+	return myHeldOres < myMaxHeldOres;
+}
+
+void CPlayer::GiveOre()
+{
+	myHeldOres++;
+
+	myHeldOres = Math::Clamp(myHeldOres, 0u, myMaxHeldOres);
 }
 
 void CPlayer::RevertXMovement()

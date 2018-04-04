@@ -49,6 +49,10 @@ void CGame::Init()
 	myGasTankTexture.loadFromFile("Sprites/gas.png");
 	myGasTankSprite.setTexture(myGasTankTexture);
 
+	myShopTexture.loadFromFile("Sprites/shop.png");
+	myShopSprite.setTexture(myShopTexture);
+
+
 	//myWindow.setFramerateLimit(60);
 }
 
@@ -176,6 +180,7 @@ void CGame::Render()
 	}
 
 	myWindow.draw(myGasTankSprite);
+	myWindow.draw(myShopSprite);
 
 	for (auto& pair : myOtherPlayers)
 	{
@@ -209,8 +214,11 @@ void CGame::LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char
 	defaultTile.myIsDestroyed = false;
 	defaultTile.myType = ETileType::Ground;
 
-	myGasTankSprite.setOrigin(myGasTankTexture.getSize().x / 2, myGasTankTexture.getSize().y);
+	myGasTankSprite.setOrigin(0.f, myGasTankTexture.getSize().y);
 	myGasTankSprite.setPosition(800.f, aSkyCutOff * 64);
+
+	myShopSprite.setOrigin(myShopTexture.getSize().x, myGasTankSprite.getOrigin().y);
+	myShopSprite.setPosition(800.f, aSkyCutOff * 64);
 
 	myTiles.clear();
 

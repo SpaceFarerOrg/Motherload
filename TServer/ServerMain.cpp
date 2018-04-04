@@ -210,6 +210,14 @@ bool CServerMain::RunServer()
 					destroyData.mySenderID = 0;
 
 					myClients[rec.GetData().mySenderID - 1].myFuel -= 0.05f;
+					
+					if (myWorld.GetBlockTypeFromID(rec.GetBlockID()) == ETileType::Ore)
+					{
+						CNetMessageSimpleType::SSimpleTypeData sData;
+						sData.myID = EMessageType::GiveOre;
+						sData.myTargetID = rec.GetData().mySenderID;
+						myMessageManager.CreateGuaranteedMessage<CNetMessageSimpleType>(sData);
+					}
 
 					CNetMessageFuel::SFuelMessageData fuelData;
 					fuelData.myTargetID = rec.GetData().mySenderID;

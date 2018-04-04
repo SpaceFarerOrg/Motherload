@@ -40,6 +40,7 @@ enum class EMessageType : short
 	AcceptGuaranteed,
 	WorldData,
 	DestroyBlock,
+	GiveOre,
 	Fuel,
 	Size
 };

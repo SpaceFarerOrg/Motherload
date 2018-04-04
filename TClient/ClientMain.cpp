@@ -263,6 +263,11 @@ bool CClientMain::RunClient()
 				myGame->GetPlayer().SetFuelAmount(rec.GetFuelAmount());
 			}
 			break;
+			case EMessageType::GiveOre:
+			{
+				myGame->GetPlayer().GiveOre();
+			}
+			break;
 			}
 		}
 	}

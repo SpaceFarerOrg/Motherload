@@ -108,3 +108,8 @@ bool CServerWorld::RemoveBlock(unsigned short aBlockID)
 
 	return false;
 }
+
+ETileType CServerWorld::GetBlockTypeFromID(size_t aID) const
+{
+	return myWorldData[aID].myType;
+}
