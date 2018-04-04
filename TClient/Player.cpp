@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "SFML/Graphics/RenderWindow.hpp"
 #include "SFML/Window/Keyboard.hpp"
+#include "Math.h"
 
 CPlayer::CPlayer()
 {
@@ -84,6 +85,39 @@ void CPlayer::UpdateY(float aDT)
 void CPlayer::Render(sf::RenderWindow * aRenderWindow)
 {
 	aRenderWindow->draw(mySprite);
+
+	//Fuel range 0-1
+	//Drain of 0.05 for every time dug
+
+	myFuelAmount = Math::Clamp(myFuelAmount, 0.f, 1.f);
+
+	sf::RectangleShape fuelbar;
+	float maxFuelBarW = 64.f;
+	float fuelBarH = 16.f;
+
+	float actualFuelBarW = maxFuelBarW * myFuelAmount;
+
+	sf::Color fuelBarColor = sf::Color::Green;
+
+	if (myFuelAmount < 0.6f)
+	{
+		fuelBarColor = sf::Color::Yellow;
+	}
+
+	if (myFuelAmount < 0.3f)
+	{
+		fuelBarColor = sf::Color::Red;
+	}
+
+	fuelbar.setSize({ actualFuelBarW, fuelBarH });
+	fuelbar.setFillColor(fuelBarColor);
+	fuelbar.setOutlineThickness(0.f);
+	
+	fuelbar.setOrigin(actualFuelBarW / 2.f, fuelBarH / 2.f);
+	fuelbar.setPosition(mySprite.getPosition().x + (mySprite.getGlobalBounds().width / 2.f), mySprite.getPosition().y - mySprite.getGlobalBounds().height / 1.8f);
+
+	aRenderWindow->draw(fuelbar);
+
 }
 
 sf::Vector2f CPlayer::GetPosition()
@@ -128,6 +162,18 @@ bool CPlayer::Intersects(const sf::FloatRect & aRect)
 	playerRect.width -= 20;
 
 	return playerRect.intersects(offset);
+}
+
+void CPlayer::SetFuelAmount(float aFuelAmount)
+{
+	myFuelAmount = aFuelAmount;
+}
+
+void CPlayer::GiveFuel(float aGive)
+{
+	myFuelAmount += aGive;
+
+	
 }
 
 void CPlayer::RevertXMovement()

@@ -39,6 +39,8 @@ public:
 	void SetKbPerSecond(float aKbPerSecond);
 	bool GetShouldRun() const;
 
+	CPlayer& GetPlayer();
+
 	sf::Vector2f GetPlayerPosition();
 
 private:

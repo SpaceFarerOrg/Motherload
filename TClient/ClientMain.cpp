@@ -252,6 +252,15 @@ bool CClientMain::RunClient()
 				myGame->DestroyBlock(rec.GetBlockID());
 			}
 			break;
+			case EMessageType::Fuel:
+			{
+				CNetMessageFuel rec;
+				rec.RecieveData(buff, sizeof(CNetMessageFuel::SFuelMessageData));
+				rec.UnpackMessage();
+
+				myGame->GetPlayer().SetFuelAmount(rec.GetFuelAmount());
+			}
+			break;
 			}
 		}
 	}
