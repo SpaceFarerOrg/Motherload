@@ -93,6 +93,8 @@ void CPlayer::Render(sf::RenderWindow * aRenderWindow)
 	myFuelAmount = Math::Clamp(myFuelAmount, 0.f, 1.f);
 
 	sf::RectangleShape fuelbar;
+	sf::RectangleShape fbbg;
+
 	float maxFuelBarW = 64.f;
 	float fuelBarH = 16.f;
 
@@ -110,14 +112,23 @@ void CPlayer::Render(sf::RenderWindow * aRenderWindow)
 		fuelBarColor = sf::Color::Red;
 	}
 
+	fbbg.setSize({maxFuelBarW, fuelBarH});
+	fbbg.setFillColor({ 75,75,75 });
+	fbbg.setOutlineColor({10,10,10});
+	fbbg.setOrigin(0.f, fbbg.getGlobalBounds().height / 2.f);
+	fbbg.setPosition(mySprite.getPosition().x , mySprite.getPosition().y - mySprite.getGlobalBounds().height / 1.8f);
+	aRenderWindow->draw(fbbg);
+
 	fuelbar.setSize({ actualFuelBarW, fuelBarH });
 	fuelbar.setFillColor(fuelBarColor);
 	fuelbar.setOutlineThickness(0.f);
 	
-	fuelbar.setOrigin(actualFuelBarW / 2.f, fuelBarH / 2.f);
-	fuelbar.setPosition(mySprite.getPosition().x + (mySprite.getGlobalBounds().width / 2.f), mySprite.getPosition().y - mySprite.getGlobalBounds().height / 1.8f);
+	fuelbar.setOrigin(0.f, fuelBarH / 2.f);
+	fuelbar.setPosition(fbbg.getPosition());
 
 	aRenderWindow->draw(fuelbar);
+
+
 
 }
 

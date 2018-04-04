@@ -224,6 +224,15 @@ bool CServerMain::RunServer()
 				}
 			}
 			break;
+			case EMessageType::Fuel:
+			{
+				CNetMessageFuel rec;
+
+				rec.RecieveData(buff, sizeof(CNetMessageFuel::SFuelMessageData));
+
+				myClients[rec.GetData().mySenderID - 1].myFuel += rec.GetFuelAmount();
+			}
+			break;
 			}
 		}
 	}
