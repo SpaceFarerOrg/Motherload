@@ -10,4 +10,5 @@
 #include "NetMessagePing.h"
 #include "NetMessageWorldData.h"
 #include "NetMessageDestroyBlock.h"
+#include "NetMessageFuel.h"
 

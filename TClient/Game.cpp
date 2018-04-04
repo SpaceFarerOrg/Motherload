@@ -321,6 +321,11 @@ bool CGame::GetShouldRun() const
 	return myShouldRun;
 }
 
+CPlayer & CGame::GetPlayer()
+{
+	return myPlayer;
+}
+
 sf::Vector2f CGame::GetPlayerPosition()
 {
 	return myPlayer.GetPosition();

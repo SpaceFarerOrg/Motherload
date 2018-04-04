@@ -85,13 +85,13 @@ bool CServerMain::RunServer()
 			if (c.myIsConnected)
 			{
 				CNetMessagePosition::SPositionMessageData data;
-			
+
 				data.myTargetID = TO_ALL - c.myID;
 				data.mySenderID = c.myID;
 				//Test comments
 				data.myX = c.myX;
 				data.myY = c.myY;
-			
+
 				myMessageManager.CreateMessage<CNetMessagePosition>(data);
 			}
 		}
@@ -109,7 +109,7 @@ bool CServerMain::RunServer()
 
 		myTimeSincePositionSend -= POSITION_FREQ;
 	}
-	
+
 	bool shouldContinueToRun = true;
 
 	sockaddr_in from;
@@ -208,7 +208,7 @@ bool CServerMain::RunServer()
 					CNetMessageDestroyBlock::SDestroyBlockData destroyData;
 					destroyData.myBlockID = rec.GetBlockID();
 					destroyData.mySenderID = 0;
-					
+
 					for (SClient& client : myClients)
 					{
 						destroyData.myTargetID = client.myID;
@@ -226,6 +226,20 @@ bool CServerMain::RunServer()
 	{
 		myLatestPingTime = currentTime;
 		myMessageManager.CreateMessage<CNetMessagePing>(CNetMessage::SNetMessageData());
+
+
+		//Send fuel amount
+		for (SClient& client : myClients)
+		{
+			client.myFuel = client.myFuel < 0.f ? 0.f : client.myFuel;
+
+			CNetMessageFuel::SFuelMessageData fuelData;
+			fuelData.myTargetID = client.myID;
+			fuelData.myFuelAmount = client.myFuel;
+
+			myMessageManager.CreateMessage<CNetMessageFuel>(fuelData);
+		}
+
 		PRINT(std::to_string((float)myMessageManager.GetSentDataLastSecond() / 125) + "kb/s");
 	}
 
@@ -273,7 +287,7 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 
 		for (size_t i = 0; i < myClients.size(); ++i)
 		{
-			if (i+1 == data.myTargetID || myClients[i].myIsConnected == false)
+			if (i + 1 == data.myTargetID || myClients[i].myIsConnected == false)
 				continue;
 
 			CNetMessageNewClient::SNetMessageNewClientData newClientData;
@@ -305,14 +319,14 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 void CServerMain::DisconnectClient(short aClientID)
 {
 	PRINT(myClients[aClientID - 1].myName + " disconnected");
-	myClients[aClientID-1].myIsConnected = false;
+	myClients[aClientID - 1].myIsConnected = false;
 
 	CNetMessage::SNetMessageData msg;
 	msg.mySenderID = myClients[aClientID - 1].myID;
 	msg.myTargetID = TO_ALL - myClients[aClientID - 1].myID;
 
 	myMessageManager.CreateMessage<CNetDisconnectMessage>(msg);
-	
+
 }
 
 //void CServerMain::RecieveChatMessage(SProtocol aProtocol)

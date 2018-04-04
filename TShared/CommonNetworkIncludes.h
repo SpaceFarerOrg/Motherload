@@ -40,6 +40,7 @@ enum class EMessageType : short
 	AcceptGuaranteed,
 	WorldData,
 	DestroyBlock,
+	Fuel,
 	Size
 };
 
@@ -77,11 +78,25 @@ struct NetVector2
 
 struct SClient
 {
+	SClient()
+	{
+		myName = "";
+		myID = 666;
+		myX = 0.f;
+		myY = 0.f;
+
+		myFuel = 1.f;
+
+		myIsConnected = true;
+	}
+
 	std::string myName;
 	size_t myID;
 
 	float myX;
 	float myY;
+
+	float myFuel;
 
 	bool myIsConnected = true;
 };

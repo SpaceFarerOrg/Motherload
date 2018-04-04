@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClInclude Include="NetMessageAcceptGuaranteedMessage.h" />
     <ClInclude Include="NetMessageDestroyBlock.h" />
+    <ClInclude Include="NetMessageFuel.h" />
     <ClInclude Include="NetMessageRemoveObject.h" />
     <ClInclude Include="CommonErrorHandling.h" />
     <ClInclude Include="CommonNetworkIncludes.h" />
@@ -106,6 +107,7 @@
   <ItemGroup>
     <ClCompile Include="NetMessageAcceptGuaranteedMessage.cpp" />
     <ClCompile Include="NetMessageDestroyBlock.cpp" />
+    <ClCompile Include="NetMessageFuel.cpp" />
     <ClCompile Include="NetMessageRemoveObject.cpp" />
     <ClCompile Include="NetDisconnectMessage.cpp" />
     <ClCompile Include="NetMessage.cpp" />
