@@ -73,6 +73,7 @@ private:
 	sf::Texture myOreTexture;
 	sf::Texture mySkyTexture;
 	sf::Texture myDugGroundTexture;
+	sf::Texture myRockTexture;
 	sf::Sprite myTileSprite;
 
 	CNetMessageManager* myMessageManager;
