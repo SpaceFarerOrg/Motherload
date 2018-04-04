@@ -312,11 +312,14 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 			myMessageManager.CreateMessage<CNetMessageNewClient>(newClientData);
 		}
 
-		CNetMessageNewClient::SNetMessageNewClientData toExistingClient;
-		toExistingClient.myConnectedClient = myClients.size();
-		toExistingClient.myTargetID = 1;
-		toExistingClient.mySenderID = 0;
-		myMessageManager.CreateGuaranteedMessage<CNetMessageNewClient>(toExistingClient);
+		for (size_t i = 0; i < myClients.size()-1; ++i)
+		{
+			CNetMessageNewClient::SNetMessageNewClientData toExistingClient;
+			toExistingClient.myConnectedClient = myClients.size();
+			toExistingClient.myTargetID = 1;
+			toExistingClient.mySenderID = 0;
+			myMessageManager.CreateGuaranteedMessage<CNetMessageNewClient>(toExistingClient);
+		}
 
 		for (auto& object : myGameObjects)
 		{
