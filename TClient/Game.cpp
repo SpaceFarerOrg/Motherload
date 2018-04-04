@@ -46,6 +46,9 @@ void CGame::Init()
 	myDugGroundTexture.loadFromFile("Sprites/background.png");
 	myRockTexture.loadFromFile("Sprites/rock.png");
 
+	myGasTankTexture.loadFromFile("Sprites/gas.png");
+	myGasTankSprite.setTexture(myGasTankTexture);
+
 	//myWindow.setFramerateLimit(60);
 }
 
@@ -172,6 +175,8 @@ void CGame::Render()
 		}
 	}
 
+	myWindow.draw(myGasTankSprite);
+
 	for (auto& pair : myOtherPlayers)
 	{
 		myWindow.draw(pair.second);
@@ -203,6 +208,9 @@ void CGame::LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char
 	STile defaultTile;
 	defaultTile.myIsDestroyed = false;
 	defaultTile.myType = ETileType::Ground;
+
+	myGasTankSprite.setOrigin(myGasTankTexture.getSize().x / 2, myGasTankTexture.getSize().y);
+	myGasTankSprite.setPosition(800.f, aSkyCutOff * 64);
 
 	myTiles.clear();
 
