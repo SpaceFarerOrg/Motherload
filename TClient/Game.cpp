@@ -190,6 +190,12 @@ void CGame::Render()
 
 	myPlayer.Render(&myWindow);
 
+	// UI Rendering
+
+	sf::View oldView = myWindow.getView();
+	sf::View uiView = myWindow.getDefaultView();
+	myWindow.setView(uiView);
+
 	myWindow.draw(myConnectedStatus);
 
 	myWindow.draw(myKbPerSecond);
@@ -197,6 +203,8 @@ void CGame::Render()
 	CDebugDrawer::GetInstance().Render(&myWindow);
 
 	myWindow.display();
+
+	myWindow.setView(oldView);
 }
 
 void CGame::LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char aSkyCutOff, const std::array<unsigned short, MAX_ORE_COUNT>& aOres)
@@ -314,7 +322,7 @@ void CGame::SetIsConnected(bool aIsConnected)
 
 void CGame::SetKbPerSecond(float aKbPerSecond)
 {
-	myKbPerSecond.setString("kb/s:" + std::to_string(aKbPerSecond));
+	myKbPerSecond.setString(std::to_string(aKbPerSecond) + "kb/s");
 }
 
 bool CGame::GetShouldRun() const
@@ -350,7 +358,7 @@ void CGame::HandlePlayerCollision(float aDT)
 {
 	unsigned short index = (unsigned short)myPlayer.GetPosition().x / 64 + myWorldWidth * (unsigned short)(myPlayer.GetPosition().y / 64);
 
-	CDebugDrawer::GetInstance().DrawTimedText(std::to_string(index), { 10, 200 }, 1.f, sf::Color::Black);
+	//CDebugDrawer::GetInstance().DrawTimedText(std::to_string(index), { 10, 200 }, 1.f, sf::Color::Black);
 
 	myPlayer.UpdateX(aDT);
 
