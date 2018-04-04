@@ -106,7 +106,7 @@ void CGame::Update()
 				CNetMessageDestroyBlock::SDestroyBlockData data;
 				data.myTargetID = 1;
 				data.myBlockID = direction;
-				data.mySenderID = 0;
+				
 
 				myMessageManager->CreateGuaranteedMessage<CNetMessageDestroyBlock>(data);
 			}

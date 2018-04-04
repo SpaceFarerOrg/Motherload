@@ -187,8 +187,8 @@ bool CServerMain::RunServer()
 				rec.GetPosition(x, y);
 
 				//Update the position of the client in world!
-				myClients[rec.GetData().mySenderID - 1].myX = x;
-				myClients[rec.GetData().mySenderID - 1].myY = y;
+				myClients[rec.GetData().mySenderID-1].myX = x;
+				myClients[rec.GetData().mySenderID-1].myY = y;
 			}
 			break;
 			case EMessageType::AcceptGuaranteed:
@@ -208,6 +208,13 @@ bool CServerMain::RunServer()
 					CNetMessageDestroyBlock::SDestroyBlockData destroyData;
 					destroyData.myBlockID = rec.GetBlockID();
 					destroyData.mySenderID = 0;
+
+					myClients[rec.GetData().mySenderID - 1].myFuel -= 0.05f;
+
+					CNetMessageFuel::SFuelMessageData fuelData;
+					fuelData.myTargetID = rec.GetData().mySenderID;
+					fuelData.myFuelAmount = myClients[rec.GetData().mySenderID - 1].myFuel;
+					myMessageManager.CreateGuaranteedMessage<CNetMessageFuel>(fuelData);
 
 					for (SClient& client : myClients)
 					{
@@ -232,11 +239,11 @@ bool CServerMain::RunServer()
 		for (SClient& client : myClients)
 		{
 			client.myFuel = client.myFuel < 0.f ? 0.f : client.myFuel;
-
+		
 			CNetMessageFuel::SFuelMessageData fuelData;
 			fuelData.myTargetID = client.myID;
 			fuelData.myFuelAmount = client.myFuel;
-
+		
 			myMessageManager.CreateMessage<CNetMessageFuel>(fuelData);
 		}
 

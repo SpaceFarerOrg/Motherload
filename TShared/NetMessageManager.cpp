@@ -3,6 +3,11 @@
 #include "NetMessageAcceptGuaranteedMessage.h"
 
 
+void CNetMessageManager::SetID(size_t aID)
+{
+	myID = aID;
+}
+
 void CNetMessageManager::Init(size_t aBufferSize, SOCKET aSocketToUse)
 {
 	myMessages.reserve(aBufferSize);
