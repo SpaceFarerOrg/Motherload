@@ -17,11 +17,17 @@ void CNetMessageNewObject::GetPosition(float & aOutX, float & aOutY)
 	aOutY = myY;
 }
 
+unsigned short CNetMessageNewObject::GetID()
+{
+	return myObjectID;
+}
+
 void CNetMessageNewObject::DoSerialize()
 {
 	CNetMessage::DoSerialize();
 	SERIALIZE(myBuffer, myX);
 	SERIALIZE(myBuffer, myY);
+	SERIALIZE(myBuffer, myObjectID);
 }
 
 void CNetMessageNewObject::DoDeserialize()
@@ -29,6 +35,7 @@ void CNetMessageNewObject::DoDeserialize()
 	CNetMessage::DoDeserialize();
 	DESERIALIZE(myBuffer, myX);
 	DESERIALIZE(myBuffer, myY);
+	DESERIALIZE(myBuffer, myObjectID);
 }
 
 void CNetMessageNewObject::Create(CNetMessageNewObject::SNewObjectData aData)
@@ -37,4 +44,5 @@ void CNetMessageNewObject::Create(CNetMessageNewObject::SNewObjectData aData)
 	myData.myID = EMessageType::NewObject;
 	myX = aData.myX;
 	myY = aData.myY;
+	myObjectID = aData.myObjectID;
 }

@@ -119,11 +119,6 @@ void CGame::Update()
 			}
 		}
 
-		for (auto& object : myGameObjects)
-		{
-			object.second.Update(dt);
-		}
-
 		CDebugDrawer::GetInstance().Update(dt);
 
 		for (short id : myDestroyBlockQueue)
@@ -134,6 +129,21 @@ void CGame::Update()
 
 		Render();
 	}
+
+
+	myWindow.clear(sf::Color(50, 150, 250));
+
+	for (auto& object : myGameObjects)
+	{
+		object.second.Update(dt);
+	}
+
+	for (auto& pair : myGameObjects)
+	{
+		pair.second.Render(&myWindow);
+	}
+
+	myWindow.display();
 }
 
 void CGame::Render()
@@ -195,11 +205,6 @@ void CGame::Render()
 	for (auto& pair : myOtherPlayers)
 	{
 		myWindow.draw(pair.second);
-	}
-
-	for (auto& pair : myGameObjects)
-	{
-		pair.second.Render(&myWindow);
 	}
 
 	myPlayer.Render(&myWindow);

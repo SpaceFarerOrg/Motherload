@@ -65,8 +65,8 @@ bool CServerMain::StartServer()
 
 	myAvailableID = 1;
 
-	myWorld.SetMessageManager(myMessageManager);
-	myWorld.Build(25, 60);
+	//myWorld.SetMessageManager(myMessageManager);
+	//myWorld.Build(25, 60);
 
 	return true;
 }
@@ -80,32 +80,33 @@ bool CServerMain::RunServer()
 
 	if (myTimeSincePositionSend >= POSITION_FREQ)
 	{
-		for (SClient& c : myClients)
-		{
-			if (c.myIsConnected)
-			{
-				CNetMessagePosition::SPositionMessageData data;
-
-				data.myTargetID = TO_ALL - c.myID;
-				data.mySenderID = c.myID;
-				//Test comments
-				data.myX = c.myX;
-				data.myY = c.myY;
-
-				myMessageManager.CreateMessage<CNetMessagePosition>(data);
-			}
-		}
-
-		//for (auto& object : myGameObjects)
+		//for (SClient& c : myClients)
 		//{
-		//	CNetMessagePosition::SPositionMessageData data;
-		//	data.myTargetID = TO_ALL;
-		//	data.mySenderID = object.first;
-		//	data.myX = object.second.GetPosition().x;
-		//	data.myY = object.second.GetPosition().y;
+		//	if (c.myIsConnected)
+		//	{
+		//		CNetMessagePosition::SPositionMessageData data;
 		//
-		//	myMessageManager.CreateMessage<CNetMessagePosition>(data);
+		//		data.myTargetID = TO_ALL - c.myID;
+		//		data.mySenderID = c.myID;
+		//		//Test comments
+		//		data.myX = c.myX;
+		//		data.myY = c.myY;
+		//
+		//		myMessageManager.CreateMessage<CNetMessagePosition>(data);
+		//	}
 		//}
+
+		for (auto& object : myGameObjects)
+		{
+			CNetMessagePosition::SPositionMessageData data;
+			data.myTargetID = TO_ALL;
+			data.mySenderID = object.first;
+			data.myX = object.second.GetPosition().x;
+			data.myY = object.second.GetPosition().y;
+			data.myObjectID = object.first;
+
+			myMessageManager.CreateMessage<CNetMessagePosition>(data);
+		}
 
 		myTimeSincePositionSend -= POSITION_FREQ;
 	}
@@ -309,7 +310,7 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 		data.mySenderID = 0;
 		myMessageManager.CreateGuaranteedMessage<CNetMessageConnect>(data);
 
-		myWorld.SendWorldData(data.myTargetID);
+		//myWorld.SendWorldData(data.myTargetID);
 
 		for (size_t i = 0; i < myClients.size(); ++i)
 		{
@@ -334,10 +335,10 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 		for (auto& object : myGameObjects)
 		{
 			CNetMessageNewObject::SNewObjectData data;
-			data.mySenderID = object.first;
 			data.myTargetID = myClients.size();
 			data.myX = object.second.GetPosition().x;
 			data.myY = object.second.GetPosition().y;
+			data.myObjectID = object.first;
 
 			myMessageManager.CreateGuaranteedMessage<CNetMessageNewObject>(data);
 		}
@@ -402,7 +403,7 @@ void CServerMain::UpdateGameObjects()
 		{
 			CNetMessageNewObject::SNewObjectData data;
 			data.myTargetID = client.myID;
-			data.mySenderID = myAvailableID;
+			data.myObjectID = myAvailableID;
 			data.myX = 800.f;
 			data.myY = 450.f;
 			myMessageManager.CreateGuaranteedMessage<CNetMessageNewObject>(data);
@@ -432,9 +433,9 @@ void CServerMain::UpdateGameObjects()
 				{
 					CNetMessageRemoveObject::SRemoveObjectData removeData;
 					removeData.myTargetID = client.myID;
-					removeData.mySenderID = object.first;
+					removeData.myObjectID = object.first;
 					myMessageManager.CreateGuaranteedMessage<CNetMessageRemoveObject>(removeData);
-					removeData.mySenderID = other.first;
+					removeData.myObjectID = other.first;
 					myMessageManager.CreateGuaranteedMessage<CNetMessageRemoveObject>(removeData);
 
 					myIDsToRemove.insert(other.first);

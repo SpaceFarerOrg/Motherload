@@ -200,8 +200,8 @@ bool CClientMain::RunClient()
 				sf::Vector2f pos;
 				rec.GetPosition(pos.x, pos.y);
 
-				myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
-				//myGame->UpdateObject(rec.GetData().mySenderID, pos);
+				//myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
+				myGame->UpdateObject(rec.GetID(), pos);
 			}
 			break;
 			case EMessageType::NewClient:
@@ -222,7 +222,7 @@ bool CClientMain::RunClient()
 				sf::Vector2f position;
 				rec.GetPosition(position.x, position.y);
 
-				//myGame->AddObject(rec.GetData().mySenderID, position);
+				myGame->AddObject(rec.GetID(), position);
 			}
 			break;
 			case EMessageType::RemoveObject:
@@ -231,7 +231,7 @@ bool CClientMain::RunClient()
 				rec.RecieveData(buff, sizeof(CNetMessageRemoveObject::SRemoveObjectData));
 				rec.UnpackMessage();
 
-				myGame->RemoveObject(rec.GetData().mySenderID);
+				myGame->RemoveObject(rec.GetID());
 			}
 			break;
 			case EMessageType::AcceptGuaranteed:

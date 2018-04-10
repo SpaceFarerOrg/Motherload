@@ -13,10 +13,12 @@ public:
 	{ 
 		float myX;
 		float myY;
+		unsigned short myObjectID;
 	};
 
 
 	void GetPosition(float& aOutX, float& aOutY);
+	unsigned short GetID();
 
 private:
 	void DoSerialize() override;
@@ -26,5 +28,6 @@ private:
 
 	float myX;
 	float myY;
+	unsigned short myObjectID;
 
 };
