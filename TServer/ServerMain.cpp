@@ -65,8 +65,8 @@ bool CServerMain::StartServer()
 
 	myAvailableID = 1;
 
-	//myWorld.SetMessageManager(myMessageManager);
-	//myWorld.Build(25, 60);
+	myWorld.SetMessageManager(myMessageManager);
+	myWorld.Build(25, 60);
 
 	return true;
 }
@@ -80,33 +80,33 @@ bool CServerMain::RunServer()
 
 	if (myTimeSincePositionSend >= POSITION_FREQ)
 	{
-		//for (SClient& c : myClients)
-		//{
-		//	if (c.myIsConnected)
-		//	{
-		//		CNetMessagePosition::SPositionMessageData data;
-		//
-		//		data.myTargetID = TO_ALL - c.myID;
-		//		data.mySenderID = c.myID;
-		//		//Test comments
-		//		data.myX = c.myX;
-		//		data.myY = c.myY;
-		//
-		//		myMessageManager.CreateMessage<CNetMessagePosition>(data);
-		//	}
-		//}
-
-		for (auto& object : myGameObjects)
+		for (SClient& c : myClients)
 		{
-			CNetMessagePosition::SPositionMessageData data;
-			data.myTargetID = TO_ALL;
-			data.mySenderID = object.first;
-			data.myX = object.second.GetPosition().x;
-			data.myY = object.second.GetPosition().y;
-			data.myObjectID = object.first;
+			if (c.myIsConnected)
+			{
+				CNetMessagePosition::SPositionMessageData data;
 
-			myMessageManager.CreateMessage<CNetMessagePosition>(data);
+				data.myTargetID = TO_ALL - c.myID;
+				data.mySenderID = c.myID;
+				//Test comments
+				data.myX = c.myX;
+				data.myY = c.myY;
+
+				myMessageManager.CreateMessage<CNetMessagePosition>(data);
+			}
 		}
+
+		//for (auto& object : myGameObjects)
+		//{
+		//	CNetMessagePosition::SPositionMessageData data;
+		//	data.myTargetID = TO_ALL;
+		//	data.mySenderID = object.first;
+		//	data.myX = object.second.GetPosition().x;
+		//	data.myY = object.second.GetPosition().y;
+		//	data.myObjectID = object.first;
+		//
+		//	myMessageManager.CreateMessage<CNetMessagePosition>(data);
+		//}
 
 		myTimeSincePositionSend -= POSITION_FREQ;
 	}
@@ -141,6 +141,18 @@ bool CServerMain::RunServer()
 			//	shouldSkip = true;
 			//}
 			myRecievedGuaranteedMessages.insert(base.GetData().myMessageID);
+		}
+
+		if (base.GetData().mySenderID != 0 && shouldSkip == false)
+		{
+			shouldSkip = true;
+			for (int i = 0; i < myClients.size(); ++i)
+			{
+				if (myClients[i].myID == base.GetData().mySenderID)
+				{
+					shouldSkip = false;
+				}
+			}
 		}
 
 		if (shouldSkip == false)
@@ -188,8 +200,8 @@ bool CServerMain::RunServer()
 				rec.GetPosition(x, y);
 
 				//Update the position of the client in world!
-				myClients[rec.GetData().mySenderID-1].myX = x;
-				myClients[rec.GetData().mySenderID-1].myY = y;
+				myClients[rec.GetData().mySenderID - 1].myX = x;
+				myClients[rec.GetData().mySenderID - 1].myY = y;
 			}
 			break;
 			case EMessageType::AcceptGuaranteed:
@@ -204,31 +216,54 @@ bool CServerMain::RunServer()
 				rec.RecieveData(buff, sizeof(CNetMessageDestroyBlock::SDestroyBlockData));
 				rec.UnpackMessage();
 
-				if (myWorld.RemoveBlock(rec.GetBlockID()))
+				unsigned short diggableIndices[4];
+				unsigned short playerIndex = (unsigned short)(myClients[rec.GetData().mySenderID-1].myX + 32) / 64 + myWorld.GetWidth() * (unsigned short)((myClients[rec.GetData().mySenderID-1].myY + 32) / 64);
+				diggableIndices[0] = playerIndex - 1;
+				diggableIndices[1] = playerIndex + 1;
+				diggableIndices[2] = playerIndex + myWorld.GetWidth();
+				diggableIndices[3] = playerIndex - myWorld.GetWidth();
+				
+				bool isDiggable = false;
+
+				for (unsigned short i : diggableIndices)
 				{
-					CNetMessageDestroyBlock::SDestroyBlockData destroyData;
-					destroyData.myBlockID = rec.GetBlockID();
-					destroyData.mySenderID = 0;
-
-					myClients[rec.GetData().mySenderID - 1].myFuel -= 0.03f;
-					
-					if (myWorld.GetBlockTypeFromID(rec.GetBlockID()) == ETileType::Ore)
+					if (i == rec.GetBlockID())
 					{
-						CNetMessageSimpleType::SSimpleTypeData sData;
-						sData.myID = EMessageType::GiveOre;
-						sData.myTargetID = rec.GetData().mySenderID;
-						myMessageManager.CreateGuaranteedMessage<CNetMessageSimpleType>(sData);
+						isDiggable = true;
+						break;
 					}
+				}
 
-					CNetMessageFuel::SFuelMessageData fuelData;
-					fuelData.myTargetID = rec.GetData().mySenderID;
-					fuelData.myFuelAmount = myClients[rec.GetData().mySenderID - 1].myFuel;
-					myMessageManager.CreateGuaranteedMessage<CNetMessageFuel>(fuelData);
 
-					for (SClient& client : myClients)
+				if (isDiggable)
+				{
+
+					if (myWorld.RemoveBlock(rec.GetBlockID()))
 					{
-						destroyData.myTargetID = client.myID;
-						myMessageManager.CreateGuaranteedMessage<CNetMessageDestroyBlock>(destroyData);
+						CNetMessageDestroyBlock::SDestroyBlockData destroyData;
+						destroyData.myBlockID = rec.GetBlockID();
+						destroyData.mySenderID = 0;
+
+						myClients[rec.GetData().mySenderID - 1].myFuel -= 0.03f;
+
+						if (myWorld.GetBlockTypeFromID(rec.GetBlockID()) == ETileType::Ore)
+						{
+							CNetMessageSimpleType::SSimpleTypeData sData;
+							sData.myID = EMessageType::GiveOre;
+							sData.myTargetID = rec.GetData().mySenderID;
+							myMessageManager.CreateGuaranteedMessage<CNetMessageSimpleType>(sData);
+						}
+
+						CNetMessageFuel::SFuelMessageData fuelData;
+						fuelData.myTargetID = rec.GetData().mySenderID;
+						fuelData.myFuelAmount = myClients[rec.GetData().mySenderID - 1].myFuel;
+						myMessageManager.CreateGuaranteedMessage<CNetMessageFuel>(fuelData);
+
+						for (SClient& client : myClients)
+						{
+							destroyData.myTargetID = client.myID;
+							myMessageManager.CreateGuaranteedMessage<CNetMessageDestroyBlock>(destroyData);
+						}
 					}
 				}
 			}
@@ -259,11 +294,11 @@ bool CServerMain::RunServer()
 		for (SClient& client : myClients)
 		{
 			client.myFuel = client.myFuel < 0.f ? 0.f : client.myFuel;
-		
+
 			CNetMessageFuel::SFuelMessageData fuelData;
 			fuelData.myTargetID = client.myID;
 			fuelData.myFuelAmount = client.myFuel;
-		
+
 			myMessageManager.CreateMessage<CNetMessageFuel>(fuelData);
 		}
 
@@ -310,7 +345,7 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 		data.mySenderID = 0;
 		myMessageManager.CreateGuaranteedMessage<CNetMessageConnect>(data);
 
-		//myWorld.SendWorldData(data.myTargetID);
+		myWorld.SendWorldData(data.myTargetID);
 
 		for (size_t i = 0; i < myClients.size(); ++i)
 		{
@@ -323,7 +358,7 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 			myMessageManager.CreateGuaranteedMessage<CNetMessageNewClient>(newClientData);
 		}
 
-		for (size_t i = 0; i < myClients.size()-1; ++i)
+		for (size_t i = 0; i < myClients.size() - 1; ++i)
 		{
 			CNetMessageNewClient::SNetMessageNewClientData toExistingClient;
 			toExistingClient.myConnectedClient = myClients.size();
@@ -332,16 +367,16 @@ void CServerMain::ConnectWith(CNetMessageConnect aConnectMessage, const sockaddr
 			myMessageManager.CreateGuaranteedMessage<CNetMessageNewClient>(toExistingClient);
 		}
 
-		for (auto& object : myGameObjects)
-		{
-			CNetMessageNewObject::SNewObjectData data;
-			data.myTargetID = myClients.size();
-			data.myX = object.second.GetPosition().x;
-			data.myY = object.second.GetPosition().y;
-			data.myObjectID = object.first;
-
-			myMessageManager.CreateGuaranteedMessage<CNetMessageNewObject>(data);
-		}
+		//for (auto& object : myGameObjects)
+		//{
+		//	CNetMessageNewObject::SNewObjectData data;
+		//	data.myTargetID = myClients.size();
+		//	data.myX = object.second.GetPosition().x;
+		//	data.myY = object.second.GetPosition().y;
+		//	data.myObjectID = object.first;
+		//
+		//	myMessageManager.CreateGuaranteedMessage<CNetMessageNewObject>(data);
+		//}
 
 	}
 }

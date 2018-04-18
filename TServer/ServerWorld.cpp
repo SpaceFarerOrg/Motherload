@@ -109,6 +109,20 @@ bool CServerWorld::RemoveBlock(unsigned short aBlockID)
 	return false;
 }
 
+unsigned short CServerWorld::GetWidth()
+{
+	return (unsigned short)myWorldWidth;
+}
+
+SBlockPos CServerWorld::GetBlockPosFromID(unsigned short aBlockID)
+{
+	SBlockPos returnPos;
+	returnPos.myX = (float)(aBlockID % myWorldWidth) * 64.f;
+	returnPos.myY = (float)(aBlockID / myWorldWidth) * 64.f;
+
+	return std::move(returnPos);
+}
+
 ETileType CServerWorld::GetBlockTypeFromID(size_t aID) const
 {
 	return myWorldData[aID].myType;

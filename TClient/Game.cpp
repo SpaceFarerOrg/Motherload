@@ -71,6 +71,14 @@ void CGame::Update()
 	view.setCenter(newCenter);
 	myWindow.setView(view);
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Y))
+	{
+		CNetMessageDestroyBlock::SDestroyBlockData data;
+		data.myTargetID = 1;
+		data.myBlockID = rand() + (myWorldHeight * myWorldWidth);
+
+		myMessageManager->CreateGuaranteedMessage<CNetMessageDestroyBlock>(data);
+	}
 
 	if (myWorldIsLoaded)
 	{
@@ -131,19 +139,19 @@ void CGame::Update()
 	}
 
 
-	myWindow.clear(sf::Color(50, 150, 250));
-
-	for (auto& object : myGameObjects)
-	{
-		object.second.Update(dt);
-	}
-
-	for (auto& pair : myGameObjects)
-	{
-		pair.second.Render(&myWindow);
-	}
-
-	myWindow.display();
+	//myWindow.clear(sf::Color(50, 150, 250));
+	//
+	//for (auto& object : myGameObjects)
+	//{
+	//	object.second.Update(dt);
+	//}
+	//
+	//for (auto& pair : myGameObjects)
+	//{
+	//	pair.second.Render(&myWindow);
+	//}
+	//
+	//myWindow.display();
 }
 
 void CGame::Render()

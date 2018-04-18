@@ -62,6 +62,7 @@ bool CClientMain::StartClient()
 	std::ifstream f("networkSettings.txt");
 	std::getline(f, serverIP);
 	std::getline(f, myUserName);
+	f.close();
 
 	//WCHAR username[UNLEN + 1];
 	//DWORD username_len = UNLEN + 1;
@@ -70,7 +71,6 @@ bool CClientMain::StartClient()
 	//std::wstring wun = username;
 	//myUserName = std::string(wun.begin(), wun.end());
 
-	f.close();
 
 	//serverIP = Utilities::GetInput("Type an IP to connect with: ", "127.0.0.1");
 
@@ -200,8 +200,8 @@ bool CClientMain::RunClient()
 				sf::Vector2f pos;
 				rec.GetPosition(pos.x, pos.y);
 
-				//myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
-				myGame->UpdateObject(rec.GetID(), pos);
+				myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
+				//myGame->UpdateObject(rec.GetID(), pos);
 			}
 			break;
 			case EMessageType::NewClient:

@@ -4,6 +4,12 @@
 
 class CNetMessageManager;
 
+struct SBlockPos
+{
+	float myX = 0.f;
+	float myY = 0.f;
+};
+
 class CServerWorld
 {
 public:
@@ -17,6 +23,11 @@ public:
 	void SendWorldData(unsigned char aTargetID);
 
 	bool RemoveBlock(unsigned short aBlockID);
+
+	unsigned short GetWidth();
+
+	SBlockPos GetBlockPosFromID(unsigned short aBlockID);
+
 
 	ETileType GetBlockTypeFromID(size_t aID) const;
 
