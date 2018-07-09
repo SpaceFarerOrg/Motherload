@@ -94,14 +94,14 @@ bool CServerMain::RunServer()
 				positionData.myX = c.myX;
 				positionData.myY = c.myY;
 
+				fuelAmountData.myID = EMessageType::FuelAmount;
 				fuelAmountData.myFloat = c.myFuel;
 				fuelAmountData.myInt = c.myID;
 				fuelAmountData.myTargetID = TO_ALL - c.myID;
 
 				
-				myMessageManager.CreateMessage<CNetMessageSimpleType>(fuelAmountData);
 				myMessageManager.CreateMessage<CNetMessagePosition>(positionData);
-
+				myMessageManager.CreateMessage<CNetMessageSimpleType>(fuelAmountData);
 
 			}
 			if (c.myIsConnected)
