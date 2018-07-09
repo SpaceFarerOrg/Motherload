@@ -15,12 +15,14 @@ void CNetMessageFuel::DoSerialize()
 {
 	CNetMessage::DoSerialize();
 	SERIALIZE(myBuffer, myFuelAmount);
+	SERIALIZE(myBuffer, myRecieverID);
 }
 
 void CNetMessageFuel::DoDeserialize()
 {
 	CNetMessage::DoDeserialize();
 	DESERIALIZE(myBuffer, myFuelAmount);
+	DESERIALIZE(myBuffer, myRecieverID);
 }
 
 void CNetMessageFuel::Create(SFuelMessageData aData)

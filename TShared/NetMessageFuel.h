@@ -20,4 +20,5 @@ private:
 	void Create(SFuelMessageData aData);
 
 	float myFuelAmount;
+	short myRecieverID;
 };
