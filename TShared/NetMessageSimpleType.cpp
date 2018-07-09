@@ -36,4 +36,7 @@ void CNetMessageSimpleType::Create(SSimpleTypeData aData)
 {
 	CNetMessage::Create(aData);
 	myData.myID = aData.myID;
+	myBool = aData.myBool;
+	myFloat = aData.myFloat;
+	myInt = aData.myInt;
 }
