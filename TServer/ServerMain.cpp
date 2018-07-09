@@ -274,9 +274,22 @@ bool CServerMain::RunServer()
 				rec.RecieveData(buff, sizeof(CNetMessageFuel::SFuelMessageData));
 				rec.UnpackMessage();
 
-				SClient& client = myClients[rec.GetReciever() - 1];
+				SClient& recClient = myClients[rec.GetReciever() - 1];
+				SClient& sendClient = myClients[rec.GetData().mySenderID - 1];
 
-				client.myFuel += client.myFuel < 1.f ? rec.GetFuelAmount() : 0.f;
+				if (rec.GetReciever() != rec.GetData().mySenderID)
+				{
+					if (recClient.myFuel < 1.0f)
+					{
+						sendClient.myFuel -= rec.GetFuelAmount();
+					}
+					if (recClient.myFuel > 1.0f)
+					{
+						recClient.myFuel = 1.0f;
+					}
+				}
+
+				recClient.myFuel += recClient.myFuel < 1.f ? rec.GetFuelAmount() : 0.f;
 			}
 			break;
 			}
