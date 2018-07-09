@@ -516,3 +516,7 @@ bool CGame::CheckCollisionWithNeighbour(unsigned short aIndex)
 
 	return false;
 }
+
+	myMusic.setVolume(5.f);
+	myMusic.setLoop(true);
+	myMusic.openFromFile("Music/motherload.wav");
