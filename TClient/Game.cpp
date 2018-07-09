@@ -53,6 +53,10 @@ void CGame::Init()
 	myShopTexture.loadFromFile("Sprites/shop.png");
 	myShopSprite.setTexture(myShopTexture);
 
+	myMusic.openFromFile("Music/motherload.wav");
+	myMusic.setLoop(true);
+	myMusic.setVolume(25.f);
+	myMusic.play();
 
 	//myWindow.setFramerateLimit(60);
 }

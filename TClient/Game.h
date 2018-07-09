@@ -11,6 +11,8 @@
 #include "CommonNetworkIncludes.h"
 
 #include "NetMessageWorldData.h"
+#include "SFML\Audio\Music.hpp"
+
 
 class CNetMessageManager;
 
@@ -58,6 +60,8 @@ private:
 	short myServerID;
 
 	sf::RenderWindow myWindow;
+	sf::Music myMusic;
+
 
 	sf::Font myDebugFont;
 	sf::Text myConnectedStatus;

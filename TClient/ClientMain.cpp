@@ -87,6 +87,8 @@ bool CClientMain::StartClient()
 
 	myGame->SetMessageManager(myMessageManager);
 
+
+
 	return true;
 }
 
