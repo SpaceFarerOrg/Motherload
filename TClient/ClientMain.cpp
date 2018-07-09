@@ -270,7 +270,9 @@ bool CClientMain::RunClient()
 				myGame->DestroyBlock(rec.GetBlockID());
 			}
 			break;
-			case EMessageType::Fuel:
+			case EMessageType::FuelAmount:			{				CNetMessageSimpleType rec;				rec.RecieveData(buff, sizeof(CNetMessageSimpleType::SSimpleTypeData));
+				rec.UnpackMessage();
+				myGame->UpdateOtherPlayer(rec.GetInt(), rec.GetFloat());			}			break;			case EMessageType::Fuel:
 			{
 				CNetMessageFuel rec;
 				rec.RecieveData(buff, sizeof(CNetMessageFuel::SFuelMessageData));
