@@ -127,6 +127,31 @@ void CGame::Update()
 			}
 		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G))
+		{
+			float closestDistance = 99999999.f;
+			short id = -1;
+			for (auto& pair : myOtherPlayers)
+			{	
+				float distance = Math::GetLength(pair.second.getPosition() - myPlayer.GetPosition());
+				if (distance < closestDistance && distance < 50.f)
+				{
+					closestDistance = distance;
+					id = pair.first;
+				}
+			}
+
+			if (id != -1)
+			{
+				CNetMessageFuel::SFuelMessageData fuelData;
+				fuelData.myFuelAmount = 10.f * dt;
+				fuelData.myTargetID = 1;
+				fuelData.myRecieverID = id;
+
+				myMessageManager->CreateMessage<CNetMessageFuel>(fuelData);
+			}
+		}
+
 		CDebugDrawer::GetInstance().Update(dt);
 
 		for (short id : myDestroyBlockQueue)
@@ -212,6 +237,7 @@ void CGame::Render()
 
 	for (auto& pair : myOtherPlayers)
 	{
+		pair.second.setTexture(myPlayerTexture);
 		myWindow.draw(pair.second);
 	}
 
@@ -291,7 +317,6 @@ void CGame::UpdateOtherPlayer(int aID, const sf::Vector2f & aPos)
 void CGame::AddPlayer(size_t aID)
 {
 	sf::Sprite newSprite;
-	newSprite.setTexture(myPlayerTexture);
 
 	myOtherPlayers.insert(std::make_pair(aID, newSprite));
 }
