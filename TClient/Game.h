@@ -28,6 +28,7 @@ public:
 	void LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char aSkyCutOff, const std::array<unsigned short, MAX_ORE_COUNT>& aOres);
 
 	void UpdateOtherPlayer(int aID, const sf::Vector2f& aPos);
+	void UpdateOtherPlayer(int aID, float aFuelAmount);
 	void AddPlayer(size_t aID);
 	void RemovePlayer(size_t aID);
 

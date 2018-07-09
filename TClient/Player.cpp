@@ -63,15 +63,17 @@ void CPlayer::UpdateX(float aDT)
 {
 	sf::Vector2f direction;
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+	if (myFuelAmount > 0.f)
 	{
-		direction.x += -1.f;
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			direction.x += -1.f;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			direction.x += 1.f;
+		}
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		direction.x += 1.f;
-	}
-
 	myLatestMovement.x = direction.x * mySpeed * aDT;
 	mySprite.move(myLatestMovement.x, 0);
 }
@@ -80,10 +82,13 @@ void CPlayer::UpdateY(float aDT)
 {
 	sf::Vector2f direction;
 
-	if (!myIsHoldingDownJump && sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && myIsGrounded)
+	if (myFuelAmount > 0.f)
 	{
-		myYVelocity = -3.f;
-		myIsGrounded = false;
+		if (!myIsHoldingDownJump && sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && myIsGrounded)
+		{
+			myYVelocity = -3.f;
+			myIsGrounded = false;
+		}
 	}
 
 	myYVelocity += 9.81f * aDT;
