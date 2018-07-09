@@ -262,6 +262,11 @@ void CGame::Render()
 	myWindow.setView(oldView);
 }
 
+void CGame::SetServerID(short aID)
+{
+	myServerID = aID;
+}
+
 void CGame::LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char aSkyCutOff, const std::array<unsigned short, MAX_ORE_COUNT>& aOres)
 {
 	myWorldIsLoaded = true;
@@ -475,6 +480,7 @@ void CGame::HandlePlayerCollision(float aDT)
 		
 		CNetMessageFuel::SFuelMessageData fuelData;
 		fuelData.myFuelAmount = aDT / 2.f;
+		fuelData.myRecieverID = myServerID;
 
 		myMessageManager->CreateMessage<CNetMessageFuel>(fuelData);
 	}

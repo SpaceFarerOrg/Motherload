@@ -23,6 +23,8 @@ public:
 	void Update();
 	void Render();
 
+	void SetServerID(short aID);
+
 	void LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char aSkyCutOff, const std::array<unsigned short, MAX_ORE_COUNT>& aOres);
 
 	void UpdateOtherPlayer(int aID, const sf::Vector2f& aPos);
@@ -51,6 +53,8 @@ private:
 
 	bool myShouldRun;
 	bool myWorldIsLoaded;
+
+	short myServerID;
 
 	sf::RenderWindow myWindow;
 

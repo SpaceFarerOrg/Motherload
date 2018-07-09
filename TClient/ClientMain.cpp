@@ -154,6 +154,7 @@ bool CClientMain::RunClient()
 					myGame->SetIsConnected(true);
 
 					myMessageManager.SetID(myID);
+					myGame->SetServerID(myID);
 				}
 			}
 			break;
