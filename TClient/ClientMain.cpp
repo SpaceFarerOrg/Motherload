@@ -200,7 +200,7 @@ bool CClientMain::RunClient()
 				sf::Vector2f pos;
 				rec.GetPosition(pos.x, pos.y);
 
-				myGame->UpdateOtherPlayer(rec.GetData().mySenderID, pos);
+				myGame->UpdateOtherPlayer(rec.GetID(), pos);
 				//myGame->UpdateObject(rec.GetID(), pos);
 			}
 			break;
