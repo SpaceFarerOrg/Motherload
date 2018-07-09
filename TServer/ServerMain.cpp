@@ -84,15 +84,22 @@ bool CServerMain::RunServer()
 		{
 			if (c.myIsConnected)
 			{
-				CNetMessagePosition::SPositionMessageData data;
+				CNetMessagePosition::SPositionMessageData positionData;
+				CNetMessageSimpleType::SSimpleTypeData fuelAmountData;
+				fuelAmountData.myID = EMessageType::FuelAmount;
 
-				data.myTargetID = TO_ALL - c.myID;
-				data.myObjectID = c.myID;
+				positionData.myTargetID = TO_ALL - c.myID;
+				positionData.myObjectID = c.myID;
 				//Test comments
-				data.myX = c.myX;
-				data.myY = c.myY;
+				positionData.myX = c.myX;
+				positionData.myY = c.myY;
 
-				myMessageManager.CreateMessage<CNetMessagePosition>(data);
+				fuelAmountData.myTargetID = TO_ALL - c.myID;
+				fuelAmountData.myInt = c.myID;
+				fuelAmountData.myFloat = c.myFuel;
+
+				myMessageManager.CreateMessage<CNetMessagePosition>(positionData);
+				myMessageManager.CreateMessage<CNetMessageSimpleType>(fuelAmountData);
 			}
 		}
 
