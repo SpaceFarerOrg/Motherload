@@ -55,7 +55,7 @@ void CGame::Init()
 
 	myMusic.openFromFile("Music/motherload.wav");
 	myMusic.setLoop(true);
-	myMusic.setVolume(25.f);
+	myMusic.setVolume(5.f);
 	myMusic.play();
 
 	//myWindow.setFramerateLimit(60);
