@@ -131,10 +131,10 @@ bool CClientMain::RunClient()
 		{
 		if (base.GetData().myMessageID > 0 && id != EMessageType::AcceptGuaranteed)
 			myMessageManager.AcceptGuaranteedMessage(0, myID, base.GetData().myMessageID);
-			//if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
-			//{
-			//	shouldSkip = true;
-			//}
+			if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
+			{
+				shouldSkip = true;
+			}
 			myRecievedGuaranteedMessages.insert(base.GetData().myMessageID);
 		}
 
