@@ -144,7 +144,7 @@ void CGame::Update()
 			if (id != -1)
 			{
 				CNetMessageFuel::SFuelMessageData fuelData;
-				fuelData.myFuelAmount = 10.f * dt;
+				fuelData.myFuelAmount = 0.1f * dt;
 				fuelData.myTargetID = 1;
 				fuelData.myRecieverID = id;
 
