@@ -12,6 +12,7 @@ public:
 		float myFuelAmount;
 	};
 
+	short GetReciever() const;
 	float GetFuelAmount() const;
 private:
 	void DoSerialize() override;

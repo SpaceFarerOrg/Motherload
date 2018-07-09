@@ -6,6 +6,11 @@ CNetMessageFuel::CNetMessageFuel()
 	myData.myID = EMessageType::Fuel;
 }
 
+short CNetMessageFuel::GetReciever() const
+{
+	return myRecieverID;
+}
+
 float CNetMessageFuel::GetFuelAmount() const
 {
 	return myFuelAmount;
