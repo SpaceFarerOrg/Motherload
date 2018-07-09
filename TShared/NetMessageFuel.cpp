@@ -35,4 +35,5 @@ void CNetMessageFuel::Create(SFuelMessageData aData)
 	CNetMessage::Create(aData);
 	myData.myID = EMessageType::Fuel;
 	myFuelAmount = aData.myFuelAmount;
+	myRecieverID = aData.myRecieverID;
 }

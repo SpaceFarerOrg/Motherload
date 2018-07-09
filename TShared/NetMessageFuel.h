@@ -10,6 +10,7 @@ public:
 	struct SFuelMessageData : public SNetMessageData
 	{
 		float myFuelAmount;
+		short mRecieverID;
 	};
 
 	short GetReciever() const;
