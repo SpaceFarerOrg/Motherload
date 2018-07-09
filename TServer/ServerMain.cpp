@@ -16,6 +16,7 @@ CServerMain::CServerMain()
 	mySpawnTimer = 0.f;
 
 	srand(static_cast<unsigned int>(time(0)));
+	myMoneyBalance = 0;
 }
 
 
@@ -98,8 +99,20 @@ bool CServerMain::RunServer()
 				fuelAmountData.myInt = c.myID;
 				fuelAmountData.myFloat = c.myFuel;
 
+
 				myMessageManager.CreateMessage<CNetMessagePosition>(positionData);
 				myMessageManager.CreateMessage<CNetMessageSimpleType>(fuelAmountData);
+			}
+			if (c.myIsConnected)
+			{
+				CNetMessageSimpleType::SSimpleTypeData moneyBalanceData;
+				moneyBalanceData.myID == EMessageType::MoneyBalance;
+				moneyBalanceData.myInt = static_cast<int>(myMoneyBalance);
+
+				moneyBalanceData.myTargetID = TO_ALL;
+
+				myMessageManager.CreateMessage<CNetMessageSimpleType>(moneyBalanceData);
+
 			}
 		}
 
@@ -273,6 +286,15 @@ bool CServerMain::RunServer()
 						}
 					}
 				}
+			}
+			break;
+			case EMessageType::MoneyBalance:
+			{
+				CNetMessageSimpleType rec;
+				rec.RecieveData(buff, sizeof(CNetMessageSimpleType));
+				rec.UnpackMessage();
+
+				myMoneyBalance += static_cast<short>(rec.GetInt());
 			}
 			break;
 			case EMessageType::Fuel:

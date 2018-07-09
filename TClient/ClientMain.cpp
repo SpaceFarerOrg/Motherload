@@ -180,6 +180,15 @@ bool CClientMain::RunClient()
 				}
 			}
 			break;
+			case EMessageType::MoneyBalance:
+			{
+				CNetMessageSimpleType rec;
+				rec.RecieveData(buff, sizeof(CNetMessageSimpleType));
+				rec.UnpackMessage();
+
+				myGame->GetPlayer().SetScore(rec.GetInt());
+			}
+			break;
 			case EMessageType::Chat:
 			{
 				CNetMessageChatMessage rec;

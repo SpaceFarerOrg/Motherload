@@ -22,6 +22,8 @@ public:
 	void UpdateY(float aDT);
 	void Render(sf::RenderWindow* aRenderWindow);
 
+	void SetScore(int aScore);
+
 	sf::Vector2f GetPosition();
 	void SetPosition(const sf::Vector2f& aPosition);
 
@@ -33,9 +35,7 @@ public:
 	void SetFuelAmount(float aFuelAmount);
 	void GiveFuel(float aGive);
 
-	void AddScore(size_t aAddedScore);
-
-	void EmptyOres();
+	int EmptyOres();
 	size_t GetHeldOres() const;
 	bool GetCanHoldMoreOres() const;
 	void GiveOre();

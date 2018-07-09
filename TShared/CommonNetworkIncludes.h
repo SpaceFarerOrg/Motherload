@@ -43,6 +43,7 @@ enum class EMessageType : short
 	GiveOre,
 	Fuel,
 	FuelAmount,
+	MoneyBalance,
 	Size
 };
 
