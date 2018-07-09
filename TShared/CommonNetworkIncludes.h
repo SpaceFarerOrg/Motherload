@@ -42,6 +42,7 @@ enum class EMessageType : short
 	DestroyBlock,
 	GiveOre,
 	Fuel,
+	FuelAmount,
 	Size
 };
 

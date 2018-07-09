@@ -217,12 +217,12 @@ bool CServerMain::RunServer()
 				rec.UnpackMessage();
 
 				unsigned short diggableIndices[4];
-				unsigned short playerIndex = (unsigned short)(myClients[rec.GetData().mySenderID-1].myX + 32) / 64 + myWorld.GetWidth() * (unsigned short)((myClients[rec.GetData().mySenderID-1].myY + 32) / 64);
+				unsigned short playerIndex = (unsigned short)(myClients[rec.GetData().mySenderID - 1].myX + 32) / 64 + myWorld.GetWidth() * (unsigned short)((myClients[rec.GetData().mySenderID - 1].myY + 32) / 64);
 				diggableIndices[0] = playerIndex - 1;
 				diggableIndices[1] = playerIndex + 1;
 				diggableIndices[2] = playerIndex + myWorld.GetWidth();
 				diggableIndices[3] = playerIndex - myWorld.GetWidth();
-				
+
 				bool isDiggable = false;
 
 				for (unsigned short i : diggableIndices)
@@ -279,6 +279,11 @@ bool CServerMain::RunServer()
 
 				if (rec.GetReciever() != rec.GetData().mySenderID)
 				{
+					if (sendClient.myFuel <= 0.f)
+					{
+						break;
+					}
+
 					if (recClient.myFuel < 1.0f)
 					{
 						sendClient.myFuel -= rec.GetFuelAmount();
