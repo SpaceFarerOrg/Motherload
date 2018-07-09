@@ -3,6 +3,7 @@
 #include "Math.h"
 #include "DebugDrawer.h"
 #include "NetMessageDestroyBlock.h"
+#include "NetMessageSimpleType.h"
 #include "NetMessageManager.h"
 #include "sfml/Window/Keyboard.hpp"
 #include "sfml/Graphics/View.hpp"
@@ -491,7 +492,15 @@ void CGame::HandlePlayerCollision(float aDT)
 
 	if (myPlayer.Intersects(myShopSprite.getGlobalBounds()))
 	{
-		myPlayer.EmptyOres();
+		int score = 0;
+		score = myPlayer.EmptyOres();
+
+		CNetMessageSimpleType::SSimpleTypeData scoreData;
+		scoreData.myID = EMessageType::MoneyBalance;
+		scoreData.myInt = score;
+		scoreData.myTargetID = 1;
+
+		myMessageManager->CreateGuaranteedMessage<CNetMessageSimpleType>(scoreData);
 	}
 }
 
@@ -517,6 +526,6 @@ bool CGame::CheckCollisionWithNeighbour(unsigned short aIndex)
 	return false;
 }
 
-	myMusic.setVolume(5.f);
-	myMusic.setLoop(true);
+	myMusic.setVolume(5.f);
+	myMusic.setLoop(true);
 	myMusic.openFromFile("Music/motherload.wav");

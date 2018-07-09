@@ -145,6 +145,11 @@ void CPlayer::Render(sf::RenderWindow * aRenderWindow)
 
 }
 
+void CPlayer::SetScore(int aScore)
+{
+	myScore = aScore;
+}
+
 sf::Vector2f CPlayer::GetPosition()
 {
 	return mySprite.getPosition();
@@ -199,15 +204,14 @@ void CPlayer::GiveFuel(float aGive)
 	myFuelAmount += aGive;
 }
 
-void CPlayer::AddScore(size_t aAddedScore)
-{
-	myScore += aAddedScore;
-}
 
-void CPlayer::EmptyOres()
+int CPlayer::EmptyOres()
 {
-	myScore += myHeldOres * 5;
+	int score = 0;
+	score += myHeldOres * 5;
 	myHeldOres = 0;
+
+	return score;
 }
 
 size_t CPlayer::GetHeldOres() const

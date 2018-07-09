@@ -49,6 +49,7 @@ private:
 	std::set<short> myIDsToRemove;
 	float mySpawnTimer;
 	short myAvailableID;
+	short myMoneyBalance;
 
 	CNetMessageManager myMessageManager;
 	time_t myLatestPingTime;
