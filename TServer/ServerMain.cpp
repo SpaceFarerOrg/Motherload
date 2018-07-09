@@ -107,10 +107,10 @@ bool CServerMain::RunServer()
 			if (c.myIsConnected)
 			{
 				CNetMessageSimpleType::SSimpleTypeData moneyBalanceData;
-				moneyBalanceData.myID == EMessageType::MoneyBalance;
+				moneyBalanceData.myID = EMessageType::MoneyBalance;
 				moneyBalanceData.myInt = static_cast<int>(myMoneyBalance);
 
-				moneyBalanceData.myTargetID = TO_ALL;
+				moneyBalanceData.myTargetID = c.myID;
 
 				myMessageManager.CreateMessage<CNetMessageSimpleType>(moneyBalanceData);
 
@@ -157,10 +157,10 @@ bool CServerMain::RunServer()
 		if (base.GetData().myMessageID > 0 && id != EMessageType::AcceptGuaranteed)
 		{
 			myMessageManager.AcceptGuaranteedMessage(base.GetData().mySenderID, 0, base.GetData().myMessageID);
-			//if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
-			//{
-			//	shouldSkip = true;
-			//}
+			if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
+			{
+				shouldSkip = true;
+			}
 			myRecievedGuaranteedMessages.insert(base.GetData().myMessageID);
 		}
 
