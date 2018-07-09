@@ -284,15 +284,6 @@ bool CClientMain::RunClient()
 				myGame->GetPlayer().GiveOre();
 			}
 			break;
-			case EMessageType::FuelAmount:
-			{
-				CNetMessageSimpleType rec;
-				rec.RecieveData(buff, sizeof(CNetMessageSimpleType::SSimpleTypeData));
-				rec.UnpackMessage();
-
-				myGame->UpdateOtherPlayer(rec.GetInt(), rec.GetFloat());
-			}
-			break;
 			}
 		}
 	}

@@ -56,7 +56,7 @@ void CGame::Init()
 
 	myMusic.openFromFile("Music/motherload.wav");
 	myMusic.setLoop(true);
-	myMusic.setVolume(5.f);
+	myMusic.setVolume(25.f);
 	myMusic.play();
 
 	//myWindow.setFramerateLimit(60);
@@ -242,48 +242,8 @@ void CGame::Render()
 
 	for (auto& pair : myOtherPlayers)
 	{
-		sf::Sprite copy = pair.second;
-		copy.setTexture(myPlayerTexture);
-		copy.setRotation(0.f);
-		copy.setColor(sf::Color(150, 150, 255, 255));
-		myWindow.draw(copy);
-
-		sf::RectangleShape fuelbar;
-		sf::RectangleShape fbbg;
-
-		float actualFuelAmount = pair.second.getRotation();
-		float maxFuelBarW = 64.f;
-		float fuelBarH = 16.f;
-
-		float actualFuelBarW = maxFuelBarW * actualFuelAmount;
-
-		sf::Color fuelBarColor = sf::Color::Green;
-
-		if (actualFuelAmount < 0.6f)
-		{
-			fuelBarColor = sf::Color::Yellow;
-		}
-
-		if (actualFuelAmount < 0.3f)
-		{
-			fuelBarColor = sf::Color::Red;
-		}
-
-		fbbg.setSize({ maxFuelBarW, fuelBarH });
-		fbbg.setFillColor({ 75,75,75 });
-		fbbg.setOutlineColor({ 10,10,10 });
-		fbbg.setOrigin(0.f, fbbg.getGlobalBounds().height / 2.f);
-		fbbg.setPosition(copy.getPosition().x, copy.getPosition().y - copy.getGlobalBounds().height / 1.8f);
-		myWindow.draw(fbbg);
-
-		fuelbar.setSize({ actualFuelBarW, fuelBarH });
-		fuelbar.setFillColor(fuelBarColor);
-		fuelbar.setOutlineThickness(0.f);
-
-		fuelbar.setOrigin(0.f, fuelBarH / 2.f);
-		fuelbar.setPosition(fbbg.getPosition());
-
-		myWindow.draw(fuelbar);
+		pair.second.setTexture(myPlayerTexture);
+		myWindow.draw(pair.second);
 	}
 
 	myPlayer.Render(&myWindow);
@@ -362,11 +322,6 @@ void CGame::LoadWorld(unsigned char aWidth, unsigned char aHeight, unsigned char
 void CGame::UpdateOtherPlayer(int aID, const sf::Vector2f & aPos)
 {
 	myOtherPlayers[aID].setPosition(aPos);
-}
-
-void CGame::UpdateOtherPlayer(int aID, float aFuelAmount)
-{
-	myOtherPlayers[aID].setRotation(aFuelAmount);
 }
 
 void CGame::AddPlayer(size_t aID)
@@ -570,3 +525,7 @@ bool CGame::CheckCollisionWithNeighbour(unsigned short aIndex)
 
 	return false;
 }
+
+	myMusic.setVolume(5.f);
+	myMusic.setLoop(true);
+	myMusic.openFromFile("Music/motherload.wav");
