@@ -39,12 +39,12 @@ void CPlayer::Init()
 void CPlayer::Update(float aDT)
 {
 	aDT;
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
-	{
-		mySprite.setPosition(768, 0);
-		myYVelocity = 0.f;
-		myIsGrounded = false;
-	}
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R))
+	//{
+	//	mySprite.setPosition(768, 0);
+	//	myYVelocity = 0.f;
+	//	myIsGrounded = false;
+	//}
 
 	myDigTimer += aDT;
 	if (myDigTimer >= myDigCooldown)
