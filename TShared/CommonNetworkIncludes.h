@@ -4,13 +4,7 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#define _INLAMNING
-
-#ifdef _INLAMNING
-#define PRINT(a)
-#else
 #define PRINT(a) std::cout << (a) << std::endl;
-#endif
 
 #define TO_ALL 0
 
