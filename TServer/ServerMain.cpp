@@ -75,7 +75,7 @@ bool CServerMain::StartServer()
 bool CServerMain::RunServer()
 {
 	UpdateTime();
-	UpdateGameObjects();
+	//UpdateGameObjects();
 
 	myTimeSincePositionSend += myCurrentTimeDelta;
 
