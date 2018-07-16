@@ -112,6 +112,6 @@ void CNetMessageManager::SendGuaranteedMessages(const std::vector<sockaddr_in>& 
 		}
 	}
 
-	if (myGuaranteedMessages.size() > 0)
+	//if (myGuaranteedMessages.size() > 0)
 		//PRINT("Sent " + std::to_string(myGuaranteedMessages.size()) + " guaranteed messages.");
 }
