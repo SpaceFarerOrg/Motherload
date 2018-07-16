@@ -57,7 +57,7 @@ void CNetMessageManager::VerifyGuaranteedMessage(unsigned int aMessageID)
 	{
 		delete myGuaranteedMessages[aMessageID];
 		myGuaranteedMessages.erase(aMessageID);
-		PRINT("Verified a guaranteed message");
+		//PRINT("Verified a guaranteed message");
 	}
 }
 
@@ -113,5 +113,5 @@ void CNetMessageManager::SendGuaranteedMessages(const std::vector<sockaddr_in>& 
 	}
 
 	if (myGuaranteedMessages.size() > 0)
-		PRINT("Sent " + std::to_string(myGuaranteedMessages.size()) + " guaranteed messages.");
+		//PRINT("Sent " + std::to_string(myGuaranteedMessages.size()) + " guaranteed messages.");
 }
