@@ -87,7 +87,7 @@ void CPlayer::UpdateY(float aDT)
 	{
 		if (!myIsHoldingDownJump && sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && myIsGrounded)
 		{
-			myYVelocity = -3.f;
+			myYVelocity = -5.f;
 			myIsGrounded = false;
 		}
 	}

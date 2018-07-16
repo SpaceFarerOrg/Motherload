@@ -99,7 +99,7 @@ bool CServerMain::RunServer()
 				fuelAmountData.myInt = c.myID;
 				fuelAmountData.myTargetID = TO_ALL - c.myID;
 
-				
+
 				myMessageManager.CreateMessage<CNetMessagePosition>(positionData);
 				myMessageManager.CreateMessage<CNetMessageSimpleType>(fuelAmountData);
 
@@ -157,11 +157,13 @@ bool CServerMain::RunServer()
 		if (base.GetData().myMessageID > 0 && id != EMessageType::AcceptGuaranteed)
 		{
 			myMessageManager.AcceptGuaranteedMessage(base.GetData().mySenderID, 0, base.GetData().myMessageID);
-			if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
+			
+			if (myRecievedGuaranteedMessages[base.GetData().mySenderID].find(base.GetData().myMessageID) != myRecievedGuaranteedMessages[base.GetData().mySenderID].end())
 			{
 				shouldSkip = true;
 			}
-			myRecievedGuaranteedMessages.insert(base.GetData().myMessageID);
+		
+			myRecievedGuaranteedMessages[base.GetData().mySenderID].insert(base.GetData().myMessageID);
 		}
 
 		if (base.GetData().mySenderID != 0 && shouldSkip == false)

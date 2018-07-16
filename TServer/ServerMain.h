@@ -53,7 +53,7 @@ private:
 
 	CNetMessageManager myMessageManager;
 	time_t myLatestPingTime;
-	std::set<unsigned int> myRecievedGuaranteedMessages;
+	std::unordered_map<short, std::set<unsigned int>> myRecievedGuaranteedMessages;
 
 	CServerWorld myWorld;
 };

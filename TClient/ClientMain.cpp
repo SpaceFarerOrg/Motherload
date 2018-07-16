@@ -128,8 +128,9 @@ bool CClientMain::RunClient()
 		CNetMessage base;
 		base.RecieveData(buff, sizeof(CNetMessage::SNetMessageData));
 		base.UnpackMessage();
-		{
+		
 		if (base.GetData().myMessageID > 0 && id != EMessageType::AcceptGuaranteed)
+		{
 			myMessageManager.AcceptGuaranteedMessage(0, myID, base.GetData().myMessageID);
 			if (myRecievedGuaranteedMessages.find(base.GetData().myMessageID) != myRecievedGuaranteedMessages.end())
 			{

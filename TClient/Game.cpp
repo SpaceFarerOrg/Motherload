@@ -23,6 +23,7 @@ void CGame::Init()
 	vm.height = 900;
 
 	myWindow.create(vm, "Mother", sf::Style::Close);
+	myWindow.setFramerateLimit(120);
 
 	myDebugFont.loadFromFile("Fonts/Roboto-Medium.ttf");
 	myConnectedStatus.setFont(myDebugFont);
